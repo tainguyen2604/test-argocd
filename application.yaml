@@ -7,7 +7,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://gitlab.com/nanuchi/argocd-app-config.git
+    repoURL: https://github.com/tainguyen2604/test-argocd.git
     targetRevision: HEAD
     path: dev
   destination: 
