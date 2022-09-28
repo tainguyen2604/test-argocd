@@ -1,0 +1,43 @@
+apiVersion: v1
+data:
+  db.yml: |-
+    - targets:
+      - 172.20.102.182:9100
+      - 172.20.101.140:9100
+      - 172.20.103.166:9100
+      labels:
+        ec2_node: mongo
+        job: ec2_production
+    - targets:
+      - 172.20.103.50:9100
+      labels:
+        ec2_node: superset
+        job: ec2_production
+    - targets:
+      - 172.20.103.107:9100
+      labels:
+        ec2_node: clickhouse
+        job: ec2_production
+    - targets:
+      - 172.20.102.167:9100
+      labels:
+        ec2_node: debezium
+        job: ec2_production
+    - targets:
+      - 172.20.102.104:9100
+      - 172.20.101.50:9100
+      - 172.20.103.233:9100
+      labels:
+        ec2_node: kafka
+        job: ec2_production
+    - targets:
+      - 172.20.101.71:9100
+      - 172.20.102.109:9100
+      - 172.20.103.202:9100
+      labels:
+        ec2_node: kafka-data
+        job: ec2_production
+kind: ConfigMap
+metadata:
+  name: prometheus-configmap
+  namespace: myapp
