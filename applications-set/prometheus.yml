@@ -8,16 +8,23 @@ spec:
       elements:
       - cluster: eks-production
         url: https://kubernetes.default.svc
-      # - cluster: EKS-DEV
-      #   url: https://3BB5B54B3C9FD99C2B2527906D78A1E0.gr7.ap-southeast-1.eks.amazonaws.com
+#       - cluster: eks-dev
+#         url: https://3BB5B54B3C9FD99C2B2527906D78A1E0.gr7.ap-southeast-1.eks.amazonaws.com
+  - git:
+      repoURL: https://github.com/urbox-vn/gitops-application-k8s.git
+      revision: main
+      directories:
+        # - path: apps/manifest/production/values
+        - path: values
+          exclude: true
   template:
     metadata:
       name: '{{cluster}}-prometheus'
     spec:
       project: default
       source:
-        path: values
-        repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
+        path: '{{path}}'
+        repoURL: 'https://github.com/urbox-vn/gitops-application-k8s.git'
         targetRevision: main
         plugin:
           name: helm-resolver
