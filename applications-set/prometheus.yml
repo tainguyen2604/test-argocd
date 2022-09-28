@@ -23,7 +23,7 @@ spec:
     spec:
       project: default
       source:
-        path: '{{path}}'
+        path: {{path}}
         repoURL: 'https://github.com/urbox-vn/gitops-application-k8s.git'
         targetRevision: main
         plugin:
