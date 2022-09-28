@@ -23,13 +23,6 @@ data:
       labels:
         ec2_node: debezium
         job: ec2_production
-    - targets:
-      - 172.20.102.104:9100
-      - 172.20.101.50:9100
-      - 172.20.103.233:9100
-      labels:
-        ec2_node: kafka
-        job: ec2_production
 kind: ConfigMap
 metadata:
   name: prometheus-configmap
