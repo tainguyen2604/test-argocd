@@ -11,7 +11,7 @@ spec:
 #       - cluster: eks-dev
 #         url: https://3BB5B54B3C9FD99C2B2527906D78A1E0.gr7.ap-southeast-1.eks.amazonaws.com
   - git:
-      repoURL: https://github.com/urbox-vn/gitops-application-k8s.git
+      repoURL: https://github.com/tainguyen2604/test-argocd
       revision: main
       directories:
         # - path: apps/manifest/production/values
