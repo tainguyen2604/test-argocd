@@ -30,13 +30,6 @@ data:
       labels:
         ec2_node: kafka
         job: ec2_production
-    - targets:
-      - 172.20.101.71:9100
-      - 172.20.102.109:9100
-      - 172.20.103.202:9100
-      labels:
-        ec2_node: kafka-data
-        job: ec2_production
 kind: ConfigMap
 metadata:
   name: prometheus-configmap
