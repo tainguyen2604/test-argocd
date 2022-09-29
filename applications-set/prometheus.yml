@@ -15,7 +15,7 @@ spec:
       revision: main
       directories:
         # - path: apps/manifest/production/values
-        - path: values
+        - path: values/*
   template:
     metadata:
       name: '{{cluster}}-prometheus'
