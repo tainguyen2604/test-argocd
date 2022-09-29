@@ -13,7 +13,7 @@ spec:
           exclude: true
   template:
     metadata:
-      name: 'prometheus'
+      name: '{{path[0]}}'
     spec:
       project: default
       source:
