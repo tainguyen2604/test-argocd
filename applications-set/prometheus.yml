@@ -16,7 +16,6 @@ spec:
       directories:
         # - path: apps/manifest/production/values
         - path: values
-          exclude: true
   template:
     metadata:
       name: '{{cluster}}-prometheus'
