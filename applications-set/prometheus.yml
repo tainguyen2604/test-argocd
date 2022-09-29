@@ -8,7 +8,7 @@ spec:
       repoURL: https://github.com/tainguyen2604/test-argocd
       revision: HEAD
       directories:
-        - path: applications-set/*
+        - path: applications-set/values/*
   template:
     metadata:
       name: 'prometheus'
