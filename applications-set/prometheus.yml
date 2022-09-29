@@ -8,14 +8,16 @@ spec:
       repoURL: https://github.com/tainguyen2604/test-argocd
       revision: HEAD
       directories:
-        - path: applications-set/values/*
+        - path: applications-set/*
+        - path: applications-set/prometheus.yml
+          exclude: true
   template:
     metadata:
       name: 'prometheus'
     spec:
       project: default
       source:
-        path: {{path[1]}}
+        path: {{ path }}
         repoURL: 'https://github.com/tainguyen2604/test-argocd'
         targetRevision: main
         plugin:
