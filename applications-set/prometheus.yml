@@ -16,7 +16,7 @@ spec:
       project: default
       source:
         path: applicaitions-set/values
-        repoURL: 'https://github.com/urbox-vn/gitops-application-k8s.git'
+        repoURL: 'https://github.com/tainguyen2604/test-argocd'
         targetRevision: main
         plugin:
           name: helm-resolver
