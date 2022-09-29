@@ -3,12 +3,12 @@ kind: ApplicationSet
 metadata:
   name: prometheus
 spec:
-#   generators:
-#   - git:
-#       repoURL: https://github.com/tainguyen2604/test-argocd
-#       revision: main
-#       directories:
-#         - path: applications-set/*
+  generators:
+  - git:
+      repoURL: https://github.com/tainguyen2604/test-argocd
+      revision: main
+      directories:
+        - path: applications-set/*
   template:
     metadata:
       name: 'prometheus'
