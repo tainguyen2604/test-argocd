@@ -17,7 +17,7 @@ spec:
     spec:
       project: default
       source:
-        path: {{ path }}
+        path: {{ path.toString() }}
         repoURL: 'https://github.com/tainguyen2604/test-argocd'
         targetRevision: main
         plugin:
