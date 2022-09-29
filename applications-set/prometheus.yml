@@ -11,7 +11,7 @@ spec:
         - path: values/*
   template:
     metadata:
-      name: '{{cluster}}-prometheus'
+      name: 'prometheus'
     spec:
       project: default
       source:
