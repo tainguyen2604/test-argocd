@@ -15,7 +15,7 @@ spec:
     spec:
       project: default
       source:
-        path: applicaitions-set/values
+        path: applications-set/values
         repoURL: 'https://github.com/tainguyen2604/test-argocd'
         targetRevision: main
         plugin:
