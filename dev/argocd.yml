@@ -22,7 +22,7 @@ spec:
         - name: CHART_NAME
           value: argo-cd
         - name: COMMAND
-          value: '--values argocd-values.yml'
+          value: '--values argocd.yml'
         - name: CHART_VERSION
           value: 5.4.4
   project: default
