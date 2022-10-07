@@ -9,7 +9,7 @@ spec:
     namespace: argocd
     server: 'https://kubernetes.default.svc'
   source:
-    path: apps/manifest/production/values
+    path: values
     repoURL: 'https://github.com/tainguyen2604/test-argocd'
     targetRevision: main
     plugin:
