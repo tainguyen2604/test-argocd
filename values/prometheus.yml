@@ -80,7 +80,7 @@ kubeStateMetrics:
   enabled: true
 nodeExporter:
   enabled: true
-  hostRootfs: true
+  hostRootfs: false
   podSecurityPolicy:
     annotations: {}
   pod:
