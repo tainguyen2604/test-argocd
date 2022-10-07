@@ -27,6 +27,12 @@ spec:
           value: 5.4.4
   project: default
   syncPolicy:
+    retry:
+      limit: 2
+      backoff:
+        duration: 5s
+        maxDuration: 60s
+        factor: 2
     syncOptions:
       - PruneLast=true
       - CreateNamespace=true
