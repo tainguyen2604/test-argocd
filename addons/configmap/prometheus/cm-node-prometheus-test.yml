@@ -25,5 +25,5 @@ data:
         job: ec2_production
 kind: ConfigMap
 metadata:
-  name: prometheus-configmap-test-test-test
+  name: prometheus-configmap-test-test-test-test
   namespace: monitoring
