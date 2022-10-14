@@ -3,8 +3,6 @@ kind: Application
 metadata:
   name: prometheus
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: ''
@@ -26,11 +24,18 @@ spec:
         - name: COMMAND
           value: '--values prometheus.yml'
         - name: CHART_VERSION
-          value: 15.12.2
+          value: 15.10.2
   project: default
   syncPolicy:
     syncOptions:
+      - PruneLast=true
       - CreateNamespace=true
     automated:
       selfHeal: true
       prune: true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
