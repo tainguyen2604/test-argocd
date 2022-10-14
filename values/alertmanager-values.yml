@@ -54,7 +54,7 @@ config:
         send_resolved: true
         parse_mode: "HTML"
         bot_token: 5605868669:AAFj3qPXIXDOJHtI_z8DbdEbnJLN2Z4zs1E
-        chat_id: -1001744741376
+        chat_id: 1452658812
         message: '{{ template "telegram.urbox" . }}'
         
   route:
