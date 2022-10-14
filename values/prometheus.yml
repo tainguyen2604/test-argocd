@@ -467,6 +467,7 @@ kubeStateMetrics:
   
 nodeExporter:
   enabled: true
+  hostRootfs: false
   podSecurityPolicy:
     annotations: {}
   pod:
