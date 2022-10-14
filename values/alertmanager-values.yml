@@ -92,10 +92,10 @@ templates:
       {{ range $i, $alert :=.Alerts }}
       🚀<b>========Urbox-Alert==========</b>
       {{if eq .Status "firing"}}
-      Status: <b>{{.Status | toUpper }} 🔥</b>
+      Status: <b>{{.Status}} 🔥</b>
       {{end }}
       {{if eq .Status "resolved"}}
-      Status: <b>{{.Status | toUpper }} ✅</b>
+      Status: <b>{{.Status}} ✅</b>
       {{end }}
       
       Severity: {{ $alert.Labels.severity }}
