@@ -77,7 +77,7 @@ config:
 #       receiver: system-team-warning
   #templates: ['/config/*.tmpl']
 configmapReload:
-  enabled: true
+  enabled: false
   name: configmap-reload
 
   image:
