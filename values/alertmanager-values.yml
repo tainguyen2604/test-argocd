@@ -90,17 +90,20 @@ templates:
     telegram.tmpl: |-
       {{ define "telegram.urbox" }}
       {{ range $i, $alert :=.Alerts }}
-      <b>========Urbox-Alert==========</b>
+      🚀<b>========Urbox-Alert==========</b>
       {{if eq .Status "firing"}}
-      Status: <b>{{.Status | str_UpperCase}} 🔥</b>
+      Status: <b>{{.Status | toUpper }} 🔥</b>
       {{end }}
       {{if eq .Status "resolved"}}
-      Status: <b>{{.Status | str_UpperCase}} ✅</b>
+      Status: <b>{{.Status | toUpper }} ✅</b>
       {{end }}
-      <b>Severity : {{ $alert.Labels.severity }}
+      
+      Severity: {{ $alert.Labels.severity }}
       <b>AlertName</b>：{{ $alert.Labels.alertname }}
       <b>Descriptions</b>：{{ $alert.Annotations.description }}
-      <b>ActiveAt</b>：{{ $alert.StartsAt.Format "2006-01-02 15:04:05" }}
-      <b>=============END=============</b>
+      <b>Summary</b>：{{ $alert.Annotations.summary }}
+      <b>ActiveAt</b> ⏱ ：{{ ($alert.StartsAt.Add (7*time.Hour) ).Format "2006-01-02 15:04:05" }} ⏱
+      <b>Duration</b>: {{(.EndsAt.Sub .StartsAt).Truncate 1000000000}}
+      <b>=============END============</b>🔚
       {{ end }}
-      {{ end }}   
+      {{ end }} 
