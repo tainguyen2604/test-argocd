@@ -70,7 +70,7 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "<b>PersistentVolumeErrors</b>\n - <b>Pod</b> : {{ $labels.pod }}\n - <b>Namespace</b> : {{ $labels.namespace }}\n - <b>Host</b> : {{ $labels.node }}"
+              summary: "<b>PersistentVolumeErrors</b>\n - <b>Pod</b> : {{ $labels.pod }}"
               description: "PersistentVolumeErrors"
       - name: HostNetworkReceiveErrors
         rules:
