@@ -86,11 +86,12 @@ data:
         rules:
           - alert: NodeDownEc2Pro
             expr: up{job="ec2_production"} == 0
-            for: 3m
+            for: 2m
             labels:
               severity: critical
             annotations:
-              summary: Node Down (instance {{ $labels.ec2_node }})
+              summary: Node Down <br/> 
+              Instance : {{ $labels.ec2_node }})
               description: "Node Down"
 kind: ConfigMap
 metadata:
