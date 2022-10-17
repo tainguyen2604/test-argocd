@@ -98,11 +98,10 @@ templates:
       Status: <b>{{.Status | toUpper }} ✅</b>
       {{end }}
       {{if eq $alert.Labels.severity "warning"}}
-      <b>Severity:</b>: ⚠️⚠️⚠️ {{ $alert.Labels.severity | toUpper }}
-      {{end }}
-      {{if eq $alert.Labels.severity "critical"}}
-      <b>Severity:</b> <b>⛔️⛔️⛔️ {{ $alert.Labels.severity | toUpper }}</b>
-      {{end }}
+        <b>Severity:</b>: ⚠️⚠️⚠️ {{ $alert.Labels.severity | toUpper }}
+      {{else eq $alert.Labels.severity "critical"}}
+        <b>Severity:</b> <b>⛔️⛔️⛔️ {{ $alert.Labels.severity | toUpper }}</b>
+      {{/if}}
       <b>AlertName</b>：{{ $alert.Labels.alertname }}
       <b>Descriptions</b>：{{ $alert.Annotations.description }}
       <b>Summary</b>：{{ $alert.Annotations.summary }}
