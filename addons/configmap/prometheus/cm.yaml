@@ -84,7 +84,7 @@ data:
               description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       - name: Node Down EC2 PRODUCTION
         rules:
-          - alert: NodeDownEc2Pro
+          - alert: <span style=\"color:blue;\">NodeDownEc2Pro</span>
             expr: up{job="ec2_production"} == 0
             for: 2m
             labels:
