@@ -92,18 +92,21 @@ templates:
       {{ range $i, $alert :=.Alerts }}
       🚀<b>========Urbox-Alert==========</b>
       {{if eq .Status "firing"}}
-      Status: <b>{{.Status}} 🔥</b>
+      Status: <b>{{.Status | toUpper }} 🔥</b>
       {{end }}
       {{if eq .Status "resolved"}}
-      Status: <b>{{.Status}} ✅</b>
+      Status: <b>{{.Status | toUpper }} ✅</b>
       {{end }}
-      
-      Severity: {{ $alert.Labels.severity }}
+      {{if eq {{ $alert.Labels.severity }} "warning" }}
+      Severity: ⚠️⚠️⚠️ {{$alert.Labels.severity | toUpper }}
+      {{end }}
+      {{if eq {{ $alert.Labels.severity }} "critical" }}
+      <b>Severity:</b> <b>⛔️⛔️⛔️ {{$alert.Labels.severity | toUpper }}</b>
+      {{end }}
       <b>AlertName</b>：{{ $alert.Labels.alertname }}
       <b>Descriptions</b>：{{ $alert.Annotations.description }}
       <b>Summary</b>：{{ $alert.Annotations.summary }}
-      <b>Duration</b>: {{(.EndsAt.Sub .StartsAt).Truncate 1000000000}}
-      <b>ActiveAt</b> ⏱ ：{{ ($alert.StartsAt.Add.Format "2006-01-02 15:04:05" }} ⏱
+      <b>ActiveAt</b> ⏱ ：{{ ($alert.StartsAt.Add 25200e9 ).Format "2006-01-02 15:04:05" }} ⏱
       <b>=============END============</b>🔚
       {{ end }}
       {{ end }} 
