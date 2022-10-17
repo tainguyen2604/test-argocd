@@ -101,7 +101,7 @@ templates:
       {{else}}
       <b>Severity:</b> <b>⛔️⛔️⛔️ {{ $alert.Labels.severity | toUpper }}</b>
       {{- end}}
-      <b>AlertName</b>： <p style="color:red;">{{ $alert.Labels.alertname }}</p>
+      <b>AlertName</b>： <div style="color:red;">{{ $alert.Labels.alertname }}</div>
       <b>Descriptions</b>：{{ $alert.Annotations.description }}
       <b>Summary</b>：{{ $alert.Annotations.summary }}
       <b>ActiveAt</b> ⏱ ：{{ ($alert.StartsAt.Add 25200e9 ).Format "2006-01-02 15:04:05" }} ⏱
