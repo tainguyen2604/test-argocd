@@ -5,12 +5,12 @@ data:
       - name: Host out of disk space
         rules:
           - alert: HostOutOfDiskSpace
-            expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
+            expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes <b 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
             for: 2m
             labels:
               severity: critical
             annotations:
-              summary: Host out of disk space (instance {{ $labels.instance }})
+              summary: "Host out of disk space\n <b>Instance</b> {{ $labels.instance }}"
               description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       - name: Host high CPU load
         rules:
@@ -20,7 +20,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: Host high CPU load (instance {{ $labels.instance }}) 
+              summary: "Host high CPU load\n <b>Instance</b> {{ $labels.instance }}"
               description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       - name: Node Down
         rules:
@@ -30,7 +30,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: Node Down (instance {{ $labels.instance }})
+              summary: "Node Down\n <b>Instance</b> {{ $labels.instance }}"
               description: "Node Down"
       - name: Pod NotReady
         rules:
@@ -40,7 +40,7 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: PodNotReady (pod {{ $labels.pod }})
+              summary: "<b>PodNotReady</b> \n - <b>Pod</b> : {{ $labels.pod }}\n - <b>Namespace</b> : {{ $labels.namespace }}\n - <b>Host</b> : {{ $labels.node }}"
               description: "pod Down"
       - name: Pod Restart
         rules:
@@ -50,7 +50,7 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: Pod Restart (pod {{ $labels.pod }})
+              summary: "<b>Pod Restart</b>\n - <b>Pod</b> : {{ $labels.pod }}\n - <b>Namespace</b> : {{ $labels.namespace }}\n - <b>Host</b> : {{ $labels.node }}"
               description: "pod Restart"
       - name: PodCrashLooping
         rules:
@@ -70,7 +70,7 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: PersistentVolumeErrors (pod {{ $labels.pod }})
+              summary: "<b>PersistentVolumeErrors</b>\n - <b>Pod</b> : {{ $labels.pod }}\n - <b>Namespace</b> : {{ $labels.namespace }}\n - <b>Host</b> : {{ $labels.node }}"
               description: "PersistentVolumeErrors"
       - name: HostNetworkReceiveErrors
         rules:
@@ -80,7 +80,7 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: Host Network Receive Errors (instance {{ $labels.instance }})
+              summary: "<b>Host Network Receive Errors</b>\n - <b>Instance</b> {{ $labels.instance }}"
               description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       - name: Node Down EC2 PRODUCTION
         rules:
@@ -90,7 +90,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Node Down\n Instance {{ $labels.ec2_node }}"
+              summary: "Node Down\n - <b>Instance</b> {{ $labels.ec2_node }}"
               description: "Node Down"
 kind: ConfigMap
 metadata:
