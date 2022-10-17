@@ -10,7 +10,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Host out of disk space\n <b>Instance</b> {{ $labels.instance }}"
+              summary: "<b>Host out of disk space</b>\n - <b>Instance</b> : {{ $labels.instance }}"
               description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       - name: Host high CPU load
         rules:
@@ -20,7 +20,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Host high CPU load\n <b>Instance</b> {{ $labels.instance }}"
+              summary: "<b>Host high CPU load</b>\n - <b>Instance</b> : {{ $labels.instance }}"
               description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       - name: Node Down
         rules:
@@ -30,7 +30,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Node Down\n <b>Instance</b> {{ $labels.instance }}"
+              summary: "<b>Node Down</b>\n - <b>Instance</b> : {{ $labels.instance }}"
               description: "Node Down"
       - name: Pod NotReady
         rules:
