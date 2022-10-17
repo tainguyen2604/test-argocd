@@ -1,8 +1,4 @@
-kind: ConfigMap
 apiVersion: v1
-metadata:
-  name: prometheus-rule
-  namespace: monitoring
 data:
   alert-custom.yaml: |-
     groups:
@@ -12,7 +8,7 @@ data:
             expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
             for: 2m
             labels:
-              severity: warning
+              severity: critical
             annotations:
               summary: Host out of disk space (instance {{ $labels.instance }})
               description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
@@ -22,9 +18,9 @@ data:
             expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
             for: 0m
             labels:
-              severity: warning
+              severity: critical
             annotations:
-              summary: Host high CPU load (instance {{ $labels.instance }})
+              summary: Host high CPU load (instance {{ $labels.instance }}) 
               description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       - name: Node Down
         rules:
@@ -32,7 +28,7 @@ data:
             expr: kube_node_status_condition{job="kubernetes-service-endpoints",condition="Ready",status="true"} == 0
             for: 2m
             labels:
-              severity: warning
+              severity: critical
             annotations:
               summary: Node Down (instance {{ $labels.instance }})
               description: "Node Down"
@@ -62,9 +58,9 @@ data:
             expr: rate(kube_pod_container_status_restarts_total{job="kubernetes-service-endpoints"}[15m]) * 60 * 5 > 0
             for: 2m
             labels:
-              severity: warning
+              severity: critical
             annotations:
-              summary: PodCrashLooping (pod {{ $labels.pod }})
+              summary: <b> PodCrashLooping </b> (pod {{ $labels.pod }})
               description: "PodCrashLooping"
       - name: PersistentVolumeErrors
         rules:
@@ -76,3 +72,27 @@ data:
             annotations:
               summary: PersistentVolumeErrors (pod {{ $labels.pod }})
               description: "PersistentVolumeErrors"
+      - name: HostNetworkReceiveErrors
+        rules:
+          - alert: HostNetworkReceiveErrors
+            expr: rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: Host Network Receive Errors (instance {{ $labels.instance }})
+              description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      - name: Node Down EC2 PRODUCTION
+        rules:
+          - alert: NodeDownEc2Pro
+            expr: up{job="ec2_production"} == 0
+            for: 3m
+            labels:
+              severity: critical
+            annotations:
+              summary: Node Down (instance {{ $labels.ec2_node }})
+              description: "Node Down"
+kind: ConfigMap
+metadata:
+  name: prometheus-rule
+  namespace: monitoring
