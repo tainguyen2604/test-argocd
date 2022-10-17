@@ -93,14 +93,13 @@ templates:
       🚀<b>========Urbox-Alert==========</b>
       {{if eq .Status "firing"}}
       Status: <b>{{.Status | toUpper }} 🔥</b>
-      {{end }}
-      {{if eq .Status "resolved"}}
+      {{else}}
       Status: <b>{{.Status | toUpper }} ✅</b>
       {{end }}
       {{if eq $alert.Labels.severity "warning"}}
-        <b>Severity:</b>: ⚠️⚠️⚠️ {{ $alert.Labels.severity | toUpper }}
+      <b>Severity:</b>: ⚠️⚠️⚠️ {{ $alert.Labels.severity | toUpper }}
       {{else}}
-        <b>Severity:</b> <b>⛔️⛔️⛔️ {{ $alert.Labels.severity | toUpper }}</b>
+      <b>Severity:</b> <b>⛔️⛔️⛔️ {{ $alert.Labels.severity | toUpper }}</b>
       {{end }}
       <b>AlertName</b>：{{ $alert.Labels.alertname }}
       <b>Descriptions</b>：{{ $alert.Annotations.description }}
