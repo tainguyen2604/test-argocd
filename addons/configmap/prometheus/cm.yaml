@@ -60,7 +60,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "<b>PodCrashLooping</b> <br /> \n Pod : {{ $labels.pod }}"
+              summary: "<b>PodCrashLooping</b>\n Pod : {{ $labels.pod }}"
               description: "PodCrashLooping"
       - name: PersistentVolumeErrors
         rules:
@@ -90,7 +90,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Node Down <br /> \n Instance {{ $labels.ec2_node }}"
+              summary: "Node Down\n Instance {{ $labels.ec2_node }}"
               description: "Node Down"
 kind: ConfigMap
 metadata:
