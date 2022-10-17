@@ -95,16 +95,16 @@ templates:
       Status: <b>{{.Status | toUpper }} 🔥</b>
       {{else}}
       Status: <b>{{.Status | toUpper }} ✅</b>
-      {{- end}}
-      {{if eq $alert.Labels.severity "warning"}}
+      {{- end -}}
+      {{- if eq $alert.Labels.severity "warning"}}
       <b>Severity:</b>: ⚠️⚠️⚠️ {{ $alert.Labels.severity | toUpper }}
       {{else}}
       <b>Severity:</b> <b>⛔️⛔️⛔️ {{ $alert.Labels.severity | toUpper }}</b>
-      {{end }}
+      {{- end -}}
       <b>AlertName</b>：{{ $alert.Labels.alertname }}
       <b>Descriptions</b>：{{ $alert.Annotations.description }}
       <b>Summary</b>：{{ $alert.Annotations.summary }}
       <b>ActiveAt</b> ⏱ ：{{ ($alert.StartsAt.Add 25200e9 ).Format "2006-01-02 15:04:05" }} ⏱
       <b>=============END============</b>🔚
-      {{ end }}
-      {{ end }} 
+      {{- end -}}
+      {{- end -}} 
