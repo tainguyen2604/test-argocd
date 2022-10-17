@@ -60,7 +60,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "<b>PodCrashLooping</b>\n Pod : {{ $labels.pod }}"
+              summary: "<b>PodCrashLooping</b>\n - <b>Pod</b> : {{ $labels.pod }}\n - <b>Namespace</b> : {{ $labels.namespace }}"
               description: "PodCrashLooping"
       - name: PersistentVolumeErrors
         rules:
