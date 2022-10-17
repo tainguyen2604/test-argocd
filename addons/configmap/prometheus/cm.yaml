@@ -80,7 +80,7 @@ data:
             labels:
               severity: warning
             annotations:
-              summary: "<b>Host Network Receive Errors</b>\n - <b>Instance</b> {{ $labels.instance }}"
+              summary: "<b>Host Network Receive Errors</b>\n - <b>Instance</b> : {{ $labels.instance }}"
               description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
       - name: Node Down EC2 PRODUCTION
         rules:
@@ -90,7 +90,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "<b>Node Down</b>\n - <b>Instance</b> {{ $labels.ec2_node }}"
+              summary: "<b>Node Down</b>\n - <b>Instance</b> : {{ $labels.ec2_node }}"
               description: "Node Down"
 kind: ConfigMap
 metadata:
