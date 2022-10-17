@@ -90,7 +90,7 @@ data:
             labels:
               severity: critical
             annotations:
-              summary: "Node Down\n Instance {{ $labels.ec2_node }}"
+              summary: "<b>Node Down</b>\n - <b>Instance</b> {{ $labels.ec2_node }}"
               description: "Node Down"
 kind: ConfigMap
 metadata:
