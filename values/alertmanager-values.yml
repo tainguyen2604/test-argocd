@@ -99,7 +99,7 @@ templates:
       {{end }}
       {{if eq $alert.Labels.severity "warning"}}
         <b>Severity:</b>: ⚠️⚠️⚠️ {{ $alert.Labels.severity | toUpper }}
-      {{else eq $alert.Labels.severity "critical"}}
+      {{else}}
         <b>Severity:</b> <b>⛔️⛔️⛔️ {{ $alert.Labels.severity | toUpper }}</b>
       {{/if}}
       <b>AlertName</b>：{{ $alert.Labels.alertname }}
