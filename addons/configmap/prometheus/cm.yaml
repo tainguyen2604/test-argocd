@@ -52,7 +52,7 @@ data:
             annotations:
               summary: "<b>Pod Restart</b>\n - <b>Pod</b> : {{ $labels.pod }}\n - <b>Namespace</b> : {{ $labels.namespace }}\n - <b>Host</b> : {{ $labels.node }}"
               description: "pod Restart"
-      - name: PodCrashLooping
+      - name: "<span style=\"color:blue;\">PodCrashLooping</span>"
         rules:
           - alert: PodCrashLooping
             expr: rate(kube_pod_container_status_restarts_total{job="kubernetes-service-endpoints"}[15m]) * 60 * 5 > 0
