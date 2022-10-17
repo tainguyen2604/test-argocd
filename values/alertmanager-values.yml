@@ -95,7 +95,7 @@ templates:
       Status: <b>{{.Status | toUpper }} 🔥</b>
       {{else}}
       Status: <b>{{.Status | toUpper }} ✅</b>
-      {{end }}
+      {{- end}}
       {{if eq $alert.Labels.severity "warning"}}
       <b>Severity:</b>: ⚠️⚠️⚠️ {{ $alert.Labels.severity | toUpper }}
       {{else}}
