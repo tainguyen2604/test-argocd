@@ -100,7 +100,7 @@ templates:
       <b>Severity:</b>: ⚠️⚠️⚠️ {{ $alert.Labels.severity | toUpper }}
       {{else}}
       <b>Severity:</b> <b>⛔️⛔️⛔️ {{ $alert.Labels.severity | toUpper }}</b>
-      {{- end -}}
+      {{- end}}
       <b>AlertName</b>： <p style="color:red;">{{ $alert.Labels.alertname }}</p>
       <b>Descriptions</b>：{{ $alert.Annotations.description }}
       <b>Summary</b>：{{ $alert.Annotations.summary }}
