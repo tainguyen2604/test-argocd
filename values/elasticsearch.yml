@@ -18,7 +18,7 @@ roles:
 replicas: 3
 minimumMasterNodes: 2
 
-esMajorVersion: ""
+esMajorVersion: "7"
 
 clusterDeprecationIndexing: "false"
 
