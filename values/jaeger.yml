@@ -3,8 +3,8 @@
 # Jaeger values are grouped by component. Cassandra values override subchart values
 
 provisionDataStore:
-  cassandra: true
-  elasticsearch: false
+  cassandra: false
+  elasticsearch: true
   kafka: false
 
 # Overrides the image tag where default is the chart appVersion.
