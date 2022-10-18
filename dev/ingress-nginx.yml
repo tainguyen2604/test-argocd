@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: ingress-nginx
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: values
+    repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
+    targetRevision: HEAD
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME
+          value: ingress-nginx
+        - name: REPO_URL
+          value: 'https://kubernetes.github.io/ingress-nginx'
+        - name: CHART_NAME
+          value: ingress-nginx
+        - name: COMMAND
+          value: '--values ingress-nginx.yml'
+        - name: CHART_VERSION
+          value: 4.3.0
+  project: default
+  syncPolicy:
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 5m
