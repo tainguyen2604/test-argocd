@@ -38,7 +38,7 @@ allInOne:
 
 storage:
   # allowed values (cassandra, elasticsearch)
-  type: cassandra
+  type: elasticsearch
   cassandra:
     host: cassandra
     port: 9042
