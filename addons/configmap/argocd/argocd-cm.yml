@@ -26,3 +26,30 @@ data:
       generate:
         command: [bash, -c]
         args: ["helm template  --include-crds -n ${ARGOCD_APP_NAMESPACE} ${ARGOCD_ENV_COMMAND} ${ARGOCD_APP_NAME} ${ARGOCD_ENV_REPO_NAME}/${ARGOCD_ENV_CHART_NAME} --version ${ARGOCD_ENV_CHART_VERSION}"]
+  resource.customizations.health.sql.cnrm.cloud.google.com_SQLInstance: |
+    health_status = {}
+
+    if obj.status == nil or obj.status.conditions == nil then
+      return hs
+    end
+
+    for i, condition in ipairs(obj.status.conditions) do
+      if condition.type == "Ready" then
+        health_status.message = condition.message
+
+        if condition.status == "True" then
+          health_status.status = "Healthy"
+          health_status.message = "The SQL instance is up-to-date."
+          return health_status
+        end
+
+        if condition.reason == "UpdateFailed" then
+          health_status.status = "Degraded"
+          return health_status
+        end
+      end
+    end
+
+    health_status.status = "Progressing"
+    health_status.message = "Provisioning SQL instance..."
+    return health_status  
