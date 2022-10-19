@@ -1,62 +1,11 @@
-## Argo CD configuration
-## Ref: https://github.com/argoproj/argo-cd
-##
-
-# -- Provide a name in place of `argocd`
-nameOverride: argocd
-# -- String to fully override `"argo-cd.fullname"`
-fullnameOverride: ""
-# -- Override the Kubernetes version, which is used to evaluate certain manifests
-kubeVersionOverride: ""
-# Override APIVersions
-# If you want to template helm charts but cannot access k8s API server
-# you can set api versions here
-apiVersionOverrides:
-  # -- String to override apiVersion of certmanager resources rendered by this helm chart
-  certmanager: "" # cert-manager.io/v1
-  # -- String to override apiVersion of GKE resources rendered by this helm chart
-  cloudgoogle: "" # cloud.google.com/v1
-  # -- String to override apiVersion of autoscaling rendered by this helm chart
-  autoscaling: "" # autoscaling/v2
-  # -- String to override apiVersion of ingresses rendered by this helm chart
-  ingress: "" # networking.k8s.io/v1beta1
-  # -- String to override apiVersion of pod disruption budgets rendered by this helm chart
-  pdb: "" # policy/v1
-
-# -- Create clusterroles that extend existing clusterroles to interact with argo-cd crds
-## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
-createAggregateRoles: false
-
-openshift:
-  # -- enables using arbitrary uid for argo repo server
-  enabled: false
-
-## Custom resource configuration
-crds:
-  # -- Install and upgrade CRDs
-  install: true
-  # -- Keep CRDs on chart uninstall
-  keep: true
-  # -- Annotations to be added to all CRDs
-  annotations: {}
-
 global:
   image:
     # -- If defined, a repository applied to all Argo CD deployments
     repository: quay.io/argoproj/argocd
     # -- Overrides the global Argo CD image tag whose default is the chart appVersion
-    tag: ""
+    tag: "v2.4.12"
     # -- If defined, a imagePullPolicy applied to all Argo CD deployments
     imagePullPolicy: IfNotPresent
-
-  # -- Secrets with credentials to pull images from a private registry
-  imagePullSecrets: []
-
-  logging:
-    # -- Set the global logging format. Either: `text` or `json`
-    format: text
-    # -- Set the global logging level. One of: `debug`, `info`, `warn` or `error`
-    level: info
   # -- Annotations for the all deployed pods
   podAnnotations: {}
   # -- Labels for the all deployed pods
@@ -67,6 +16,8 @@ global:
   #  runAsGroup: 999
   #  fsGroup: 999
 
+  # -- If defined, uses a Secret to pull an image from a private Docker registry or repository
+  imagePullSecrets: []
   # -- Mapping between IP and hostnames that will be injected as entries in the pod's hosts files
   hostAliases: []
   # - ip: 10.20.30.40
@@ -83,258 +34,20 @@ global:
     # -- Default deny all ingress traffic
     defaultDenyIngress: false
 
-## Argo Configs
-configs:
-  # -- Provide one or multiple [external cluster credentials]
-  # @default -- `[]` (See [values.yaml])
-  ## Ref:
-  ## - https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#clusters
-  ## - https://argo-cd.readthedocs.io/en/stable/operator-manual/security/#external-cluster-credentials
-  clusterCredentials: []
-    # - name: mycluster
-    #   server: https://mycluster.com
-    #   labels: {}
-    #   annotations: {}
-    #   config:
-    #     bearerToken: "<authentication token>"
-    #     tlsClientConfig:
-    #       insecure: false
-    #       caData: "<base64 encoded certificate>"
-    # - name: mycluster2
-    #   server: https://mycluster2.com
-    #   labels: {}
-    #   annotations: {}
-    #   namespaces: namespace1,namespace2
-    #   clusterResources: true
-    #   config:
-    #     bearerToken: "<authentication token>"
-    #     tlsClientConfig:
-    #       insecure: false
-    #       caData: "<base64 encoded certificate>"
+# Override APIVersions
+# If you want to template helm charts but cannot access k8s API server
+# you can set api versions here
+apiVersionOverrides:
+  # -- String to override apiVersion of certmanager resources rendered by this helm chart
+  certmanager: "" # cert-manager.io/v1
+  # -- String to override apiVersion of ingresses rendered by this helm chart
+  ingress: "" # networking.k8s.io/v1beta1
+  # -- String to override apiVersion of autoscaling rendered by this helm chart
+  autoscaling: "" # autoscaling/v2
 
-  # -- GnuPG key ring annotations
-  gpgKeysAnnotations: {}
-  # -- [GnuPG](https://argo-cd.readthedocs.io/en/stable/user-guide/gpg-verification/) keys to add to the key ring
-  # @default -- `{}` (See [values.yaml])
-  gpgKeys: {}
-    # 4AEE18F83AFDEB23: |
-    #     -----BEGIN PGP PUBLIC KEY BLOCK-----
-    #
-    #     mQENBFmUaEEBCACzXTDt6ZnyaVtueZASBzgnAmK13q9Urgch+sKYeIhdymjuMQta
-    #     x15OklctmrZtqre5kwPUosG3/B2/ikuPYElcHgGPL4uL5Em6S5C/oozfkYzhwRrT
-    #     SQzvYjsE4I34To4UdE9KA97wrQjGoz2Bx72WDLyWwctD3DKQtYeHXswXXtXwKfjQ
-    #     7Fy4+Bf5IPh76dA8NJ6UtjjLIDlKqdxLW4atHe6xWFaJ+XdLUtsAroZcXBeWDCPa
-    #     buXCDscJcLJRKZVc62gOZXXtPfoHqvUPp3nuLA4YjH9bphbrMWMf810Wxz9JTd3v
-    #     yWgGqNY0zbBqeZoGv+TuExlRHT8ASGFS9SVDABEBAAG0NUdpdEh1YiAod2ViLWZs
-    #     b3cgY29tbWl0IHNpZ25pbmcpIDxub3JlcGx5QGdpdGh1Yi5jb20+iQEiBBMBCAAW
-    #     BQJZlGhBCRBK7hj4Ov3rIwIbAwIZAQAAmQEH/iATWFmi2oxlBh3wAsySNCNV4IPf
-    #     DDMeh6j80WT7cgoX7V7xqJOxrfrqPEthQ3hgHIm7b5MPQlUr2q+UPL22t/I+ESF6
-    #     9b0QWLFSMJbMSk+BXkvSjH9q8jAO0986/pShPV5DU2sMxnx4LfLfHNhTzjXKokws
-    #     +8ptJ8uhMNIDXfXuzkZHIxoXk3rNcjDN5c5X+sK8UBRH092BIJWCOfaQt7v7wig5
-    #     4Ra28pM9GbHKXVNxmdLpCFyzvyMuCmINYYADsC848QQFFwnd4EQnupo6QvhEVx1O
-    #     j7wDwvuH5dCrLuLwtwXaQh0onG4583p0LGms2Mf5F+Ick6o/4peOlBoZz48=
-    #     =Bvzs
-    #     -----END PGP PUBLIC KEY BLOCK-----
-
-  # -- Known Hosts configmap annotations
-  knownHostsAnnotations: {}
-  knownHosts:
-    data:
-      # -- Known Hosts
-      # @default -- See [values.yaml]
-      ssh_known_hosts: |
-        bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==
-        github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
-        github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
-        github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
-        gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
-        gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
-        gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
-        ssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
-        vs-ssh.visualstudio.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
-  # -- TLS certificate configmap annotations
-  tlsCertsAnnotations: {}
-  # -- TLS certificate
-  # @default -- See [values.yaml]
-  tlsCerts:
-    {}
-    # data:
-    #   argocd.example.com: |
-    #     -----BEGIN CERTIFICATE-----
-    #     MIIF1zCCA7+gAwIBAgIUQdTcSHY2Sxd3Tq/v1eIEZPCNbOowDQYJKoZIhvcNAQEL
-    #     BQAwezELMAkGA1UEBhMCREUxFTATBgNVBAgMDExvd2VyIFNheG9ueTEQMA4GA1UE
-    #     BwwHSGFub3ZlcjEVMBMGA1UECgwMVGVzdGluZyBDb3JwMRIwEAYDVQQLDAlUZXN0
-    #     c3VpdGUxGDAWBgNVBAMMD2Jhci5leGFtcGxlLmNvbTAeFw0xOTA3MDgxMzU2MTda
-    #     Fw0yMDA3MDcxMzU2MTdaMHsxCzAJBgNVBAYTAkRFMRUwEwYDVQQIDAxMb3dlciBT
-    #     YXhvbnkxEDAOBgNVBAcMB0hhbm92ZXIxFTATBgNVBAoMDFRlc3RpbmcgQ29ycDES
-    #     MBAGA1UECwwJVGVzdHN1aXRlMRgwFgYDVQQDDA9iYXIuZXhhbXBsZS5jb20wggIi
-    #     MA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCv4mHMdVUcafmaSHVpUM0zZWp5
-    #     NFXfboxA4inuOkE8kZlbGSe7wiG9WqLirdr39Ts+WSAFA6oANvbzlu3JrEQ2CHPc
-    #     CNQm6diPREFwcDPFCe/eMawbwkQAPVSHPts0UoRxnpZox5pn69ghncBR+jtvx+/u
-    #     P6HdwW0qqTvfJnfAF1hBJ4oIk2AXiip5kkIznsAh9W6WRy6nTVCeetmIepDOGe0G
-    #     ZJIRn/OfSz7NzKylfDCat2z3EAutyeT/5oXZoWOmGg/8T7pn/pR588GoYYKRQnp+
-    #     YilqCPFX+az09EqqK/iHXnkdZ/Z2fCuU+9M/Zhrnlwlygl3RuVBI6xhm/ZsXtL2E
-    #     Gxa61lNy6pyx5+hSxHEFEJshXLtioRd702VdLKxEOuYSXKeJDs1x9o6cJ75S6hko
-    #     Ml1L4zCU+xEsMcvb1iQ2n7PZdacqhkFRUVVVmJ56th8aYyX7KNX6M9CD+kMpNm6J
-    #     kKC1li/Iy+RI138bAvaFplajMF551kt44dSvIoJIbTr1LigudzWPqk31QaZXV/4u
-    #     kD1n4p/XMc9HYU/was/CmQBFqmIZedTLTtK7clkuFN6wbwzdo1wmUNgnySQuMacO
-    #     gxhHxxzRWxd24uLyk9Px+9U3BfVPaRLiOPaPoC58lyVOykjSgfpgbus7JS69fCq7
-    #     bEH4Jatp/10zkco+UQIDAQABo1MwUTAdBgNVHQ4EFgQUjXH6PHi92y4C4hQpey86
-    #     r6+x1ewwHwYDVR0jBBgwFoAUjXH6PHi92y4C4hQpey86r6+x1ewwDwYDVR0TAQH/
-    #     BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEAFE4SdKsX9UsLy+Z0xuHSxhTd0jfn
-    #     Iih5mtzb8CDNO5oTw4z0aMeAvpsUvjJ/XjgxnkiRACXh7K9hsG2r+ageRWGevyvx
-    #     CaRXFbherV1kTnZw4Y9/pgZTYVWs9jlqFOppz5sStkfjsDQ5lmPJGDii/StENAz2
-    #     XmtiPOgfG9Upb0GAJBCuKnrU9bIcT4L20gd2F4Y14ccyjlf8UiUi192IX6yM9OjT
-    #     +TuXwZgqnTOq6piVgr+FTSa24qSvaXb5z/mJDLlk23npecTouLg83TNSn3R6fYQr
-    #     d/Y9eXuUJ8U7/qTh2Ulz071AO9KzPOmleYPTx4Xty4xAtWi1QE5NHW9/Ajlv5OtO
-    #     OnMNWIs7ssDJBsB7VFC8hcwf79jz7kC0xmQqDfw51Xhhk04kla+v+HZcFW2AO9so
-    #     6ZdVHHQnIbJa7yQJKZ+hK49IOoBR6JgdB5kymoplLLiuqZSYTcwSBZ72FYTm3iAr
-    #     jzvt1hxpxVDmXvRnkhRrIRhK4QgJL0jRmirBjDY+PYYd7bdRIjN7WNZLFsgplnS8
-    #     9w6CwG32pRlm0c8kkiQ7FXA6BYCqOsDI8f1VGQv331OpR2Ck+FTv+L7DAmg6l37W
-    #     +LB9LGh4OAp68ImTjqf6ioGKG0RBSznwME+r4nXtT1S/qLR6ASWUS4ViWRhbRlNK
-    #     XWyb96wrUlv+E8I=
-    #     -----END CERTIFICATE-----
-
-  # -- Repository credentials to be used as Templates for other repos
-  ## Creates a secret for each key/value specified below to create repository credentials
-  credentialTemplates: {}
-    # github-enterprise-creds-1:
-    #   url: https://github.com/argoproj
-    #   githubAppID: 1
-    #   githubAppInstallationID: 2
-    #   githubAppEnterpriseBaseUrl: https://ghe.example.com/api/v3
-    #   githubAppPrivateKey: |
-    #     -----BEGIN OPENSSH PRIVATE KEY-----
-    #     ...
-    #     -----END OPENSSH PRIVATE KEY-----
-    # https-creds:
-    #   url: https://github.com/argoproj
-    #   password: my-password
-    #   username: my-username
-    # ssh-creds:
-    #  url: git@github.com:argoproj-labs
-    #  sshPrivateKey: |
-    #    -----BEGIN OPENSSH PRIVATE KEY-----
-    #    ...
-    #    -----END OPENSSH PRIVATE KEY-----
-
-  # -- Annotations to be added to `configs.credentialTemplates` Secret
-  credentialTemplatesAnnotations: {}
-
-  # -- Repositories list to be used by applications
-  ## Creates a secret for each key/value specified below to create repositories
-  ## Note: the last example in the list would use a repository credential template, configured under "configs.repositoryCredentials".
-  repositories: {}
-    # istio-helm-repo:
-    #   url: https://storage.googleapis.com/istio-prerelease/daily-build/master-latest-daily/charts
-    #   name: istio.io
-    #   type: helm
-    # private-helm-repo:
-    #   url: https://my-private-chart-repo.internal
-    #   name: private-repo
-    #   type: helm
-    #   password: my-password
-    #   username: my-username
-    # private-repo:
-    #   url: https://github.com/argoproj/private-repo
-
-  # -- Annotations to be added to `configs.repositories` Secret
-  repositoriesAnnotations: {}
-
-  secret:
-    # -- Create the argocd-secret
-    createSecret: true
-    # -- Annotations to be added to argocd-secret
-    annotations: {}
-
-    # -- Shared secret for authenticating GitHub webhook events
-    githubSecret: ""
-    # -- Shared secret for authenticating GitLab webhook events
-    gitlabSecret: ""
-    # -- Shared secret for authenticating BitbucketServer webhook events
-    bitbucketServerSecret: ""
-    # -- UUID for authenticating Bitbucket webhook events
-    bitbucketUUID: ""
-    # -- Shared secret for authenticating Gogs webhook events
-    gogsSecret: ""
-
-    # -- add additional secrets to be added to argocd-secret
-    ## Custom secrets. Useful for injecting SSO secrets into environment variables.
-    ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
-    ## Note that all values must be non-empty.
-    extra:
-      {}
-      # LDAP_PASSWORD: "mypassword"
-
-    # -- Argo TLS Data
-    argocdServerTlsConfig:
-      {}
-      # key:
-      # crt: |
-      #   -----BEGIN CERTIFICATE-----
-      #   <cert data>
-      #   -----END CERTIFICATE-----
-      #   -----BEGIN CERTIFICATE-----
-      #   <ca cert data>
-      #   -----END CERTIFICATE-----
-
-    # -- Bcrypt hashed admin password
-    ## Argo expects the password in the secret to be bcrypt hashed. You can create this hash with
-    ## `htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/'`
-    argocdServerAdminPassword: ""
-    # -- Admin password modification time. Eg. `"2006-01-02T15:04:05Z"`
-    # @default -- `""` (defaults to current time)
-    argocdServerAdminPasswordMtime: ""
-
-  # -- Define custom [CSS styles] for your argo instance.
-  # This setting will automatically mount the provided CSS and reference it in the argo configuration.
-  # @default -- `""` (See [values.yaml])
-  ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/custom-styles/
-  styles: ""
-  # styles: |
-  #  .nav-bar {
-  #    background: linear-gradient(to bottom, #999, #777, #333, #222, #111);
-  #  }
-
-  # Argo CD configuration parameters
-  ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cmd-params-cm.yaml
-  params:
-    # -- Annotations to be added to the argocd-cmd-params-cm ConfigMap
-    annotations: {}
-
-    ## Generic parameters
-    # -- Open-Telemetry collector address: (e.g. "otel-collector:4317")
-    otlp.address: ''
-
-    ## Controller Properties
-    # -- Number of application status processors
-    controller.status.processors: 20
-    # -- Number of application operation processors
-    controller.operation.processors: 10
-    # -- Specifies timeout between application self heal attempts
-    controller.self.heal.timeout.seconds: 5
-    # -- Repo server RPC call timeout seconds.
-    controller.repo.server.timeout.seconds: 60
-
-    ## Server properties
-    # -- Run server without TLS
-    server.insecure: false
-    # -- Value for base href in index.html. Used if Argo CD is running behind reverse proxy under subpath different from /
-    server.basehref: /
-    # -- Used if Argo CD is running behind reverse proxy under subpath different from /
-    server.rootpath: ''
-    # -- Directory path that contains additional static assets
-    server.staticassets: /shared/app
-    # -- Disable Argo CD RBAC for user authentication
-    server.disable.auth: false
-    # -- Enable GZIP compression
-    server.enable.gzip: false
-    # -- Set X-Frame-Options header in HTTP responses to value. To disable, set to "".
-    server.x.frame.options: sameorigin
-
-    ## Repo-server properties
-    # -- Limit on number of concurrent manifests generate requests. Any value less the 1 means no limit.
-    reposerver.parallelism.limit: 0
+# -- Create clusterroles that extend existing clusterroles to interact with argo-cd crds
+## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
+createAggregateRoles: false
 
 # -- Array of extra K8s manifests to deploy
 extraObjects: []
@@ -364,32 +77,11 @@ extraObjects: []
   #       labels:
   #         app.kubernetes.io/part-of: argocd
 
-## Application controller
+## Controller
 controller:
   # -- Application controller name string
   name: application-controller
 
-  # -- The number of application controller pods to run.
-  # Additional replicas will cause sharding of managed clusters across number of replicas.
-  replicas: 1
-
-  ## Application controller Pod Disruption Budget
-  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  pdb:
-    # -- Deploy a [PodDisruptionBudget] for the application controller
-    enabled: false
-    # -- Labels to be added to application controller pdb
-    labels: {}
-    # -- Annotations to be added to application controller pdb
-    annotations: {}
-    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-    # @default -- `""` (defaults to 0 if not specified)
-    minAvailable: ""
-    # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-    ## Has higher precedence over `controller.pdb.minAvailable`
-    maxUnavailable: ""
-
-  ## Application controller image
   image:
     # -- Repository to use for the application controller
     # @default -- `""` (defaults to global.image.repository)
@@ -401,39 +93,52 @@ controller:
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
 
-  # -- Secrets with credentials to pull images from a private registry
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
+  # -- The number of application controller pods to run.
+  # If changing the number of replicas you must pass the number as `ARGOCD_CONTROLLER_REPLICAS` as an environment variable
+  replicas: 1
 
-  # -- DEPRECATED - Application controller commandline flags
-  args: {}
-  # DEPRECATED - Use configs.params to override
-  #  # -- define the application controller `--status-processors`
-  #  statusProcessors: "20"
-  #  # -- define the application controller `--operation-processors`
-  #  operationProcessors: "10"
-  #  # -- define the application controller `--app-hard-resync`
-  #  appHardResyncPeriod: "0"
-  #  # -- define the application controller `--app-resync`
-  #  appResyncPeriod: "180"
-  #  # -- define the application controller `--self-heal-timeout-seconds`
-  #  selfHealTimeout: "5"
-  #  # -- define the application controller `--repo-server-timeout-seconds`
-  #  repoServerTimeoutSeconds: "60"
+  # -- Deploy the application controller as a StatefulSet instead of a Deployment, this is required for HA capability.
+  enableStatefulSet: true
 
-  # DEPRECATED - Use configs.params to override
+  ## Application controller commandline flags
+  args:
+#     # -- define the application controller `--status-processors`
+#     statusProcessors: "20"
+#     # -- define the application controller `--operation-processors`
+#     operationProcessors: "10"
+#     # -- define the application controller `--app-resync`
+#     appResyncPeriod: "10"
+#     appHardResyncPeriod: "10"
+#     # -- define the application controller `--self-heal-timeout-seconds`
+#     selfHealTimeout: "300"
+#     # -- define the application controller `--repo-server-timeout-seconds`
+#     repoServerTimeoutSeconds: "10"
+    # -- define the application controller `--status-processors`
+    statusProcessors: "20"
+    # -- define the application controller `--operation-processors`
+    operationProcessors: "10"
+    # -- define the application controller `--app-hard-resync`
+    appHardResyncPeriod: "60"
+    # -- define the application controller `--app-resync`
+    appResyncPeriod: "60"
+    # -- define the application controller `--self-heal-timeout-seconds`
+    selfHealTimeout: "300"
+    # -- define the application controller `--repo-server-timeout-seconds`
+    repoServerTimeoutSeconds: "60"
+
   # -- Application controller log format. Either `text` or `json`
-  # @default -- `""` (defaults to global.logging.format)
-  # logFormat: ""
-  # -- Application controller log level. One of: `debug`, `info`, `warn` or `error`
-  # @default -- `""` (defaults to global.logging.level)
-  # logLevel: ""
+  logFormat: text
+  # -- Application controller log level
+  logLevel: info
 
   # -- Additional command line arguments to pass to application controller
   extraArgs: []
 
   # -- Environment variables to pass to application controller
-  env: []
+  env:
+    []
+    # - name: "ARGOCD_CONTROLLER_REPLICAS"
+    #   value: ""
 
   # -- envFrom to pass to application controller
   # @default -- `[]` (See [values.yaml])
@@ -507,7 +212,11 @@ controller:
   # -- [Node selector]
   nodeSelector: {}
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations: 
+    - key: system
+      operator: Equal
+      value: 'true'
+      effect: NoExecute
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -538,8 +247,6 @@ controller:
     name: argocd-application-controller
     # -- Annotations applied to created service account
     annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
     # -- Automount API credentials for the Service Account
     automountServiceAccountToken: true
 
@@ -589,7 +296,7 @@ controller:
       spec: []
       # - alert: ArgoAppMissing
       #   expr: |
-      #     absent(argocd_app_info) == 1
+      #     absent(argocd_app_info)
       #   for: 15m
       #   labels:
       #     severity: critical
@@ -651,6 +358,20 @@ controller:
   #    name: custom-tools
   #    subPath: helm
 
+  pdb:
+    # -- Labels to be added to application controller pdb
+    labels: {}
+    # -- Annotations to be added to application controller pdb
+    annotations: {}
+
+    # -- Deploy a Poddisruptionbudget for the application controller
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 0
+
+  # -- Secrets with credentials to pull images from a private registry
+  imagePullSecrets: []
+
 ## Dex
 dex:
   # -- Enable dex
@@ -693,36 +414,14 @@ dex:
       # -- Prometheus ServiceMonitor labels
       additionalLabels: {}
 
-  ## Dex Pod Disruption Budget
-  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  pdb:
-    # -- Deploy a [PodDisruptionBudget] for the Dex server
-    enabled: false
-    # -- Labels to be added to Dex server pdb
-    labels: {}
-    # -- Annotations to be added to Dex server pdb
-    annotations: {}
-    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-    # @default -- `""` (defaults to 0 if not specified)
-    minAvailable: ""
-    # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-    ## Has higher precedence over `dex.pdb.minAvailable`
-    maxUnavailable: ""
-
-  ## Dex image
   image:
     # -- Dex image repository
     repository: ghcr.io/dexidp/dex
     # -- Dex image tag
-    tag: v2.35.1-distroless
+    tag: v2.30.2
     # -- Dex imagePullPolicy
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
-
-  # -- Secrets with credentials to pull images from a private registry
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
-
   initImage:
     # -- Argo CD init image repository
     # @default -- `""` (defaults to global.image.repository)
@@ -791,10 +490,20 @@ dex:
     automountServiceAccountToken: true
 
   # -- Additional volumeMounts to the dex main container
-  volumeMounts: []
+  volumeMounts:
+    - name: static-files
+      mountPath: /shared
 
   # -- Additional volumes to the dex pod
-  volumes: []
+  volumes:
+    - name: static-files
+      emptyDir: {}
+
+  # -- Extra volumes to the dex pod
+  extraVolumes: []
+
+  # -- Extra volumeMounts to the dex pod
+  extraVolumeMounts: []
 
   # -- Container port for HTTP access
   containerPortHttp: 5556
@@ -816,7 +525,11 @@ dex:
   # -- [Node selector]
   nodeSelector: {}
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations: 
+    - key: system
+      operator: Equal
+      value: 'true'
+      effect: NoExecute
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -839,7 +552,7 @@ dex:
     #     - all
     # readOnlyRootFilesystem: true
 
-  # -- Resource limits and requests for dex
+# -- Resource limits and requests for dex
   resources: {}
   #  limits:
   #    cpu: 50m
@@ -867,6 +580,20 @@ dex:
   #    name: custom-tools
   #    subPath: helm
 
+  pdb:
+    # -- Labels to be added to Dex server pdb
+    labels: {}
+    # -- Annotations to be added to Dex server pdb
+    annotations: {}
+
+    # -- Deploy a Poddisruptionbudget for the Dex server
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 0
+
+  # -- Secrets with credentials to pull images from a private registry
+  imagePullSecrets: []
+
 ## Redis
 redis:
   # -- Enable redis
@@ -874,34 +601,13 @@ redis:
   # -- Redis name
   name: redis
 
-  ## Redis Pod Disruption Budget
-  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  pdb:
-    # -- Deploy a [PodDisruptionBudget] for the Redis
-    enabled: false
-    # -- Labels to be added to Redis pdb
-    labels: {}
-    # -- Annotations to be added to Redis pdb
-    annotations: {}
-    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-    # @default -- `""` (defaults to 0 if not specified)
-    minAvailable: ""
-    # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-    ## Has higher precedence over `redis.pdb.minAvailable`
-    maxUnavailable: ""
-
-  ## Redis image
   image:
     # -- Redis repository
     repository: public.ecr.aws/docker/library/redis
     # -- Redis tag
-    tag: 7.0.5-alpine
+    tag: 7.0.4-alpine
     # -- Redis imagePullPolicy
     imagePullPolicy: IfNotPresent
-
-  # -- Secrets with credentials to pull images from a private registry
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
 
   # -- Additional command line arguments to pass to redis-server
   extraArgs: []
@@ -933,7 +639,11 @@ redis:
   # -- [Node selector]
   nodeSelector: {}
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations: 
+    - key: system
+      operator: Equal
+      value: 'true'
+      effect: NoExecute
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -1065,6 +775,19 @@ redis:
       # -- Prometheus ServiceMonitor labels
       additionalLabels: {}
 
+  pdb:
+    # -- Labels to be added to Redis server pdb
+    labels: {}
+    # -- Annotations to be added to Redis server pdb
+    annotations: {}
+
+    # -- Deploy a Poddisruptionbudget for the Redis server
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 0
+
+  # -- Secrets with credentials to pull images from a private registry
+  imagePullSecrets: []
 
 # This key configures Redis-HA subchart and when enabled (redis-ha.enabled=true)
 # the custom redis deployment is omitted
@@ -1095,7 +818,7 @@ redis-ha:
       enabled: true
   image:
     # -- Redis tag
-    tag: 7.0.5-alpine
+    tag: 7.0.4-alpine
 
   ## https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
   topologySpreadConstraints:
@@ -1115,8 +838,6 @@ redis-ha:
 externalRedis:
   # -- External Redis server host
   host: ""
-  # -- External Redis username
-  username: ""
   # -- External Redis password
   password: ""
   # -- External Redis server port
@@ -1135,7 +856,6 @@ server:
   # -- The number of server pods to run
   replicas: 1
 
-  ## Argo CD server Horizontal Pod Autoscaler
   autoscaling:
     # -- Enable Horizontal Pod Autoscaler ([HPA]) for the Argo CD server
     enabled: false
@@ -1147,39 +867,7 @@ server:
     targetCPUUtilizationPercentage: 50
     # -- Average memory utilization percentage for the Argo CD server [HPA]
     targetMemoryUtilizationPercentage: 50
-    # -- Configures the scaling behavior of the target in both Up and Down directions.
-    # This is only available on HPA apiVersion `autoscaling/v2beta2` and newer
-    behavior: {}
-      # scaleDown:
-      #  stabilizationWindowSeconds: 300
-      #  policies:
-      #   - type: Pods
-      #     value: 1
-      #     periodSeconds: 180
-      # scaleUp:
-      #   stabilizationWindowSeconds: 300
-      #   policies:
-      #   - type: Pods
-      #     value: 2
-      #     periodSeconds: 60
 
-  ## Argo CD server Pod Disruption Budget
-  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  pdb:
-    # -- Deploy a [PodDisruptionBudget] for the Argo CD server
-    enabled: false
-    # -- Labels to be added to Argo CD server pdb
-    labels: {}
-    # -- Annotations to be added to Argo CD server pdb
-    annotations: {}
-    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-    # @default -- `""` (defaults to 0 if not specified)
-    minAvailable: ""
-    # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-    ## Has higher precedence over `server.pdb.minAvailable`
-    maxUnavailable: ""
-
-  ## Argo CD server image
   image:
     # -- Repository to use for the Argo CD server
     # @default -- `""` (defaults to global.image.repository)
@@ -1191,12 +879,14 @@ server:
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: "" # IfNotPresent
 
-  # -- Secrets with credentials to pull images from a private registry
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
-
   # -- Additional command line arguments to pass to Argo CD server
-  extraArgs: []
+  extraArgs:
+    - --insecure
+
+  # This flag is used to either remove or pass the CLI flag --staticassets /shared/app to the Argo CD server app
+  staticAssets:
+    # -- Disable deprecated flag `--staticassets`
+    enabled: true
 
   # -- Environment variables to pass to Argo CD server
   env: []
@@ -1212,13 +902,10 @@ server:
   # -- Specify postStart and preStop lifecycle hooks for your argo-cd-server container
   lifecycle: {}
 
-  # DEPRECATED - Use configs.params to override
   # -- Argo CD server log format: Either `text` or `json`
-  # @default -- `""` (defaults to global.logging.format)
-  # logFormat: ""
-  # -- Argo CD server log level. One of: `debug`, `info`, `warn` or `error`
-  # @default -- `""` (defaults to global.logging.level)
-  # logLevel: ""
+  logFormat: text
+  # -- Argo CD server log level
+  logLevel: info
 
   # -- Annotations to be added to server pods
   podAnnotations: {}
@@ -1264,7 +951,11 @@ server:
   # -- [Node selector]
   nodeSelector: {}
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations: 
+    - key: system
+      operator: Equal
+      value: 'true'
+      effect: NoExecute
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -1306,16 +997,6 @@ server:
     duration: ""
     # -- How long before the currently issued certificate's expiry cert-manager should renew the certificate. Value must be in units accepted by Go time.ParseDuration
     renewBefore: ""
-    # Private key of the certificate
-    privateKey:
-      # -- Rotation policy of private key when certificate is re-issued. Either: `Never` or `Always`
-      rotationPolicy: Never
-      # -- The private key cryptography standards (PKCS) encoding for private key. Either: `PCKS1` or `PKCS8`
-      encoding: PKCS1
-      # -- Algorithm used to generate certificate private key. One of: `RSA`, `Ed25519` or `ECDSA`
-      algorithm: RSA
-      # -- Key bit size of the private key. If algorithm is set to `Ed25519`, size is ignored.
-      size: 2048
     issuer:
       # -- Certificate issuer group. Set if using an external issuer. Eg. `cert-manager.io`
       group: ""
@@ -1405,28 +1086,25 @@ server:
     name: argocd-server
     # -- Annotations applied to created service account
     annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
     # -- Automount API credentials for the Service Account
     automountServiceAccountToken: true
 
   ingress:
     # -- Enable an ingress resource for the Argo CD server
-    enabled: false
+    enabled: true
     # -- Additional ingress annotations
     annotations: {}
     # -- Additional ingress labels
     labels: {}
     # -- Defines which ingress controller will implement the resource
-    ingressClassName: ""
+    ingressClassName: "nginx"
 
     # -- List of ingress hosts
     ## Argo Ingress.
     ## Hostnames must be provided if Ingress is enabled.
     ## Secrets must be manually created in the namespace
     hosts:
-      []
-      # - argocd.example.com
+       - argocd.urbox.services
 
     # -- List of ingress paths
     paths:
@@ -1549,43 +1227,30 @@ server:
   config:
     # Argo CD's externally facing base URL (optional). Required when configuring SSO
     url: ""
-
     # Argo CD instance label key
     application.instanceLabelKey: argocd.argoproj.io/instance
 
-    # Enable logs RBAC enforcement
+    # Enabled logs RBAC enforcement
     # Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/upgrading/2.3-2.4/#enable-logs-rbac-enforcement
     server.rbac.log.enforce.enable: "false"
 
     # exec.enabled indicates whether the UI exec feature is enabled. It is disabled by default.
     # Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
-    exec.enabled: "false"
+    exec.enabled: "true"
 
-    # admin.enabled indicates whether the admin user is enabled. It is enabled by default.
-    # https://argo-cd.readthedocs.io/en/latest/faq/#how-to-disable-admin-user
-    admin.enabled: "true"
+    # DEPRECATED: Please instead use configs.credentialTemplates and configs.repositories
+    # repositories: |
+    #   - url: git@github.com:group/repo.git
+    #     sshPrivateKeySecret:
+    #       name: secret-name
+    #       key: sshPrivateKey
+    #   - type: helm
+    #     url: https://charts.helm.sh/stable
+    #     name: stable
+    #   - type: helm
+    #     url: https://argoproj.github.io/argo-helm
+    #     name: argo
 
-    # Application reconciliation timeout is the max amount of time required to discover if a new manifests version got
-    # published to the repository. Reconciliation by timeout is disabled if timeout is set to 0. Three minutes by default.
-    timeout.reconciliation: 180s
-
-    # Timeout to refresh application data as well as target manifests cache
-    timeout.hard.reconciliation: "0"
-
-    # Dex configuration
-    # dex.config: |
-    #   connectors:
-    #     # GitHub example
-    #     - type: github
-    #       id: github
-    #       name: GitHub
-    #       config:
-    #         clientID: aabbccddeeff00112233
-    #         clientSecret: $dex.github.clientSecret # Alternatively $<some_K8S_secret>:dex.github.clientSecret
-    #         orgs:
-    #         - name: your-github-org
-
-    # OIDC configuration as an alternative to dex (optional).
     # oidc.config: |
     #   name: AzureAD
     #   issuer: https://login.microsoftonline.com/TENANT_ID/v2.0
@@ -1631,6 +1296,83 @@ server:
   # -- Whether or not to create the configmap. If false, it is expected the configmap will be created
   # by something else. Argo CD will not work if there is no configMap created with the name above.
   rbacConfigCreate: true
+
+  # -- Deploy Argo CD Applications within this helm release
+  # @default -- `[]` (See [values.yaml])
+  ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
+  additionalApplications: []
+  # - name: guestbook
+  #   namespace: argocd
+  #   additionalLabels: {}
+  #   additionalAnnotations: {}
+  #   finalizers:
+  #   - resources-finalizer.argocd.argoproj.io
+  #   project: guestbook
+  #   source:
+  #     repoURL: https://github.com/argoproj/argocd-example-apps.git
+  #     targetRevision: HEAD
+  #     path: guestbook
+  #     directory:
+  #       recurse: true
+  #   destination:
+  #     server: https://kubernetes.default.svc
+  #     namespace: guestbook
+  #   syncPolicy:
+  #     automated:
+  #       prune: false
+  #       selfHeal: false
+  #   ignoreDifferences:
+  #   - group: apps
+  #     kind: Deployment
+  #     jsonPointers:
+  #     - /spec/replicas
+  #   info:
+  #   - name: url
+  #     value: https://argoproj.github.io/
+
+  # -- Deploy Argo CD Projects within this helm release
+  # @default -- `[]` (See [values.yaml])
+  ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/
+  additionalProjects: []
+  # - name: guestbook
+  #   namespace: argocd
+  #   additionalLabels: {}
+  #   additionalAnnotations: {}
+  #   finalizers:
+  #   - resources-finalizer.argocd.argoproj.io
+  #   description: Example Project
+  #   sourceRepos:
+  #   - '*'
+  #   destinations:
+  #   - namespace: guestbook
+  #     server: https://kubernetes.default.svc
+  #   clusterResourceWhitelist: []
+  #   clusterResourceBlacklist: []
+  #   namespaceResourceBlacklist:
+  #   - group: ''
+  #     kind: ResourceQuota
+  #   - group: ''
+  #     kind: LimitRange
+  #   - group: ''
+  #     kind: NetworkPolicy
+  #     orphanedResources: {}
+  #     roles: []
+  #   namespaceResourceWhitelist:
+  #   - group: 'apps'
+  #     kind: Deployment
+  #   - group: 'apps'
+  #     kind: StatefulSet
+  #   orphanedResources: {}
+  #   roles: []
+  #   syncWindows:
+  #   - kind: allow
+  #     schedule: '10 1 * * *'
+  #     duration: 1h
+  #     applications:
+  #     - '*-prod'
+  #     manualSync: true
+  #   signatureKeys:
+  #   - keyID: ABCDEF1234567890
 
   ## Enable Admin ClusterRole resources.
   ## Enable if you would like to grant rights to Argo CD to deploy to the local Kubernetes cluster.
@@ -1713,14 +1455,11 @@ server:
   #    name: custom-tools
   #    subPath: helm
 
-  ## Argo UI extensions
-  ## This function in tech preview stage, do expect unstability or breaking changes in newer versions.
-  ## Ref: https://github.com/argoproj-labs/argocd-extensions
   extensions:
-    # -- Enable support for Argo UI extensions
+    # -- Enable support for extensions
+    ## This function in tech preview stage, do expect unstability or breaking changes in newer versions. Bump image.tag if necessary.
     enabled: false
 
-    ## Argo UI extensions image
     image:
       # -- Repository to use for extensions image
       repository: "ghcr.io/argoproj-labs/argocd-extensions"
@@ -1738,6 +1477,25 @@ server:
     #    cpu: 10m
     #    memory: 64Mi
 
+    # -- Extensions to be loaded into the server
+    contents: []
+    # - name: argo-rollouts
+    #   url: https://github.com/argoproj-labs/rollout-extension/releases/download/v0.1.0/extension.tar
+
+  pdb:
+    # -- Labels to be added to server pdb
+    labels: {}
+    # -- Annotations to be added to server pdb
+    annotations: {}
+
+    # -- Deploy a Poddisruptionbudget for the server
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 0
+
+  # -- Secrets with credentials to pull images from a private registry
+  imagePullSecrets: []
+
 ## Repo Server
 repoServer:
   # -- Repo server name
@@ -1746,7 +1504,6 @@ repoServer:
   # -- The number of repo server pods to run
   replicas: 1
 
-  ## Repo server Horizontal Pod Autoscaler
   autoscaling:
     # -- Enable Horizontal Pod Autoscaler ([HPA]) for the repo server
     enabled: false
@@ -1758,39 +1515,7 @@ repoServer:
     targetCPUUtilizationPercentage: 50
     # -- Average memory utilization percentage for the repo server [HPA]
     targetMemoryUtilizationPercentage: 50
-    # -- Configures the scaling behavior of the target in both Up and Down directions.
-    # This is only available on HPA apiVersion `autoscaling/v2beta2` and newer
-    behavior: {}
-      # scaleDown:
-      #  stabilizationWindowSeconds: 300
-      #  policies:
-      #   - type: Pods
-      #     value: 1
-      #     periodSeconds: 180
-      # scaleUp:
-      #   stabilizationWindowSeconds: 300
-      #   policies:
-      #   - type: Pods
-      #     value: 2
-      #     periodSeconds: 60
 
-  ## Repo server Pod Disruption Budget
-  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  pdb:
-    # -- Deploy a [PodDisruptionBudget] for the repo server
-    enabled: false
-    # -- Labels to be added to repo server pdb
-    labels: {}
-    # -- Annotations to be added to repo server pdb
-    annotations: {}
-    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-    # @default -- `""` (defaults to 0 if not specified)
-    minAvailable: ""
-    # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-    ## Has higher precedence over `repoServer.pdb.minAvailable`
-    maxUnavailable: ""
-
-  ## Repo server image
   image:
     # -- Repository to use for the repo server
     # @default -- `""` (defaults to global.image.repository)
@@ -1801,10 +1526,6 @@ repoServer:
     # -- Image pull policy for the repo server
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: "" # IfNotPresent
-
-  # -- Secrets with credentials to pull images from a private registry
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
 
   # -- Additional command line arguments to pass to repo server
   extraArgs: []
@@ -1820,13 +1541,10 @@ repoServer:
   # - secretRef:
   #     name: secret-name
 
-  # DEPRECATED - Use configs.params to override
   # -- Repo server log format: Either `text` or `json`
-  # @default -- `""` (defaults to global.logging.level)
-  # logFormat: ""
-  # -- Repo server log level. One of: `debug`, `info`, `warn` or `error`
-  # @default -- `""` (defaults to global.logging.format)
-  # logLevel: ""
+  logFormat: text
+  # -- Repo server log level
+  logLevel: info
 
   # -- Annotations to be added to repo server pods
   podAnnotations: {}
@@ -1877,7 +1595,11 @@ repoServer:
   # -- [Node selector]
   nodeSelector: {}
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations: 
+    - key: system
+      operator: Equal
+      value: 'true'
+      effect: NoExecute
   # -- Assign custom [affinity] rules to the deployment
   affinity: {}
 
@@ -1978,8 +1700,6 @@ repoServer:
     name: "" # "argocd-repo-server"
     # -- Annotations applied to created service account
     annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
     # -- Automount API credentials for the Service Account
     automountServiceAccountToken: true
 
@@ -1997,6 +1717,17 @@ repoServer:
   #     - list
   #     - watch
 
+  # Init container to copy argocd binary
+  copyutil:
+    # -- Resource limits and requests for the copyutil initContainer
+    resources: {}
+    #  limits:
+    #    cpu: 50m
+    #    memory: 64Mi
+    #  requests:
+    #    cpu: 10m
+    #    memory: 32Mi
+
   # -- Init containers to add to the repo server pods
   initContainers: []
   #  - name: download-tools
@@ -2013,34 +1744,250 @@ repoServer:
   #    name: custom-tools
   #    subPath: helm
 
-## ApplicationSet controller
+  pdb:
+    # -- Labels to be added to Repo server pdb
+    labels: {}
+    # -- Annotations to be added to Repo server pdb
+    annotations: {}
+
+    # -- Deploy a Poddisruptionbudget for the Repo server
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 0
+
+  # -- Secrets with credentials to pull images from a private registry
+  imagePullSecrets: []
+
+## Argo Configs
+configs:
+  # -- Provide one or multiple [external cluster credentials]
+  # @default -- `[]` (See [values.yaml])
+  ## Ref:
+  ## - https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#clusters
+  ## - https://argo-cd.readthedocs.io/en/stable/operator-manual/security/#external-cluster-credentials
+  clusterCredentials: []
+    # - name: mycluster
+    #   server: https://mycluster.com
+    #   labels: {}
+    #   annotations: {}
+    #   config:
+    #     bearerToken: "<authentication token>"
+    #     tlsClientConfig:
+    #       insecure: false
+    #       caData: "<base64 encoded certificate>"
+    # - name: mycluster2
+    #   server: https://mycluster2.com
+    #   labels: {}
+    #   annotations: {}
+    #   namespaces: namespace1,namespace2
+    #   clusterResources: true
+    #   config:
+    #     bearerToken: "<authentication token>"
+    #     tlsClientConfig:
+    #       insecure: false
+    #       caData: "<base64 encoded certificate>"
+
+  # -- GnuPG key ring annotations
+  gpgKeysAnnotations: {}
+  # -- [GnuPG](https://argo-cd.readthedocs.io/en/stable/user-guide/gpg-verification/) keys to add to the key ring
+  # @default -- `{}` (See [values.yaml])
+  gpgKeys: {}
+    # 4AEE18F83AFDEB23: |
+    #     -----BEGIN PGP PUBLIC KEY BLOCK-----
+    #
+    #     mQENBFmUaEEBCACzXTDt6ZnyaVtueZASBzgnAmK13q9Urgch+sKYeIhdymjuMQta
+    #     x15OklctmrZtqre5kwPUosG3/B2/ikuPYElcHgGPL4uL5Em6S5C/oozfkYzhwRrT
+    #     SQzvYjsE4I34To4UdE9KA97wrQjGoz2Bx72WDLyWwctD3DKQtYeHXswXXtXwKfjQ
+    #     7Fy4+Bf5IPh76dA8NJ6UtjjLIDlKqdxLW4atHe6xWFaJ+XdLUtsAroZcXBeWDCPa
+    #     buXCDscJcLJRKZVc62gOZXXtPfoHqvUPp3nuLA4YjH9bphbrMWMf810Wxz9JTd3v
+    #     yWgGqNY0zbBqeZoGv+TuExlRHT8ASGFS9SVDABEBAAG0NUdpdEh1YiAod2ViLWZs
+    #     b3cgY29tbWl0IHNpZ25pbmcpIDxub3JlcGx5QGdpdGh1Yi5jb20+iQEiBBMBCAAW
+    #     BQJZlGhBCRBK7hj4Ov3rIwIbAwIZAQAAmQEH/iATWFmi2oxlBh3wAsySNCNV4IPf
+    #     DDMeh6j80WT7cgoX7V7xqJOxrfrqPEthQ3hgHIm7b5MPQlUr2q+UPL22t/I+ESF6
+    #     9b0QWLFSMJbMSk+BXkvSjH9q8jAO0986/pShPV5DU2sMxnx4LfLfHNhTzjXKokws
+    #     +8ptJ8uhMNIDXfXuzkZHIxoXk3rNcjDN5c5X+sK8UBRH092BIJWCOfaQt7v7wig5
+    #     4Ra28pM9GbHKXVNxmdLpCFyzvyMuCmINYYADsC848QQFFwnd4EQnupo6QvhEVx1O
+    #     j7wDwvuH5dCrLuLwtwXaQh0onG4583p0LGms2Mf5F+Ick6o/4peOlBoZz48=
+    #     =Bvzs
+    #     -----END PGP PUBLIC KEY BLOCK-----
+
+  # -- Known Hosts configmap annotations
+  knownHostsAnnotations: {}
+  knownHosts:
+    data:
+      # -- Known Hosts
+      # @default -- See [values.yaml]
+      ssh_known_hosts: |
+        bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==
+        github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+        github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+        gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
+        gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
+        gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
+        ssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
+        vs-ssh.visualstudio.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
+  # -- TLS certificate configmap annotations
+  tlsCertsAnnotations: {}
+  # -- TLS certificate
+  # @default -- See [values.yaml]
+  tlsCerts:
+    {}
+    # data:
+    #   argocd.example.com: |
+    #     -----BEGIN CERTIFICATE-----
+    #     MIIF1zCCA7+gAwIBAgIUQdTcSHY2Sxd3Tq/v1eIEZPCNbOowDQYJKoZIhvcNAQEL
+    #     BQAwezELMAkGA1UEBhMCREUxFTATBgNVBAgMDExvd2VyIFNheG9ueTEQMA4GA1UE
+    #     BwwHSGFub3ZlcjEVMBMGA1UECgwMVGVzdGluZyBDb3JwMRIwEAYDVQQLDAlUZXN0
+    #     c3VpdGUxGDAWBgNVBAMMD2Jhci5leGFtcGxlLmNvbTAeFw0xOTA3MDgxMzU2MTda
+    #     Fw0yMDA3MDcxMzU2MTdaMHsxCzAJBgNVBAYTAkRFMRUwEwYDVQQIDAxMb3dlciBT
+    #     YXhvbnkxEDAOBgNVBAcMB0hhbm92ZXIxFTATBgNVBAoMDFRlc3RpbmcgQ29ycDES
+    #     MBAGA1UECwwJVGVzdHN1aXRlMRgwFgYDVQQDDA9iYXIuZXhhbXBsZS5jb20wggIi
+    #     MA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCv4mHMdVUcafmaSHVpUM0zZWp5
+    #     NFXfboxA4inuOkE8kZlbGSe7wiG9WqLirdr39Ts+WSAFA6oANvbzlu3JrEQ2CHPc
+    #     CNQm6diPREFwcDPFCe/eMawbwkQAPVSHPts0UoRxnpZox5pn69ghncBR+jtvx+/u
+    #     P6HdwW0qqTvfJnfAF1hBJ4oIk2AXiip5kkIznsAh9W6WRy6nTVCeetmIepDOGe0G
+    #     ZJIRn/OfSz7NzKylfDCat2z3EAutyeT/5oXZoWOmGg/8T7pn/pR588GoYYKRQnp+
+    #     YilqCPFX+az09EqqK/iHXnkdZ/Z2fCuU+9M/Zhrnlwlygl3RuVBI6xhm/ZsXtL2E
+    #     Gxa61lNy6pyx5+hSxHEFEJshXLtioRd702VdLKxEOuYSXKeJDs1x9o6cJ75S6hko
+    #     Ml1L4zCU+xEsMcvb1iQ2n7PZdacqhkFRUVVVmJ56th8aYyX7KNX6M9CD+kMpNm6J
+    #     kKC1li/Iy+RI138bAvaFplajMF551kt44dSvIoJIbTr1LigudzWPqk31QaZXV/4u
+    #     kD1n4p/XMc9HYU/was/CmQBFqmIZedTLTtK7clkuFN6wbwzdo1wmUNgnySQuMacO
+    #     gxhHxxzRWxd24uLyk9Px+9U3BfVPaRLiOPaPoC58lyVOykjSgfpgbus7JS69fCq7
+    #     bEH4Jatp/10zkco+UQIDAQABo1MwUTAdBgNVHQ4EFgQUjXH6PHi92y4C4hQpey86
+    #     r6+x1ewwHwYDVR0jBBgwFoAUjXH6PHi92y4C4hQpey86r6+x1ewwDwYDVR0TAQH/
+    #     BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEAFE4SdKsX9UsLy+Z0xuHSxhTd0jfn
+    #     Iih5mtzb8CDNO5oTw4z0aMeAvpsUvjJ/XjgxnkiRACXh7K9hsG2r+ageRWGevyvx
+    #     CaRXFbherV1kTnZw4Y9/pgZTYVWs9jlqFOppz5sStkfjsDQ5lmPJGDii/StENAz2
+    #     XmtiPOgfG9Upb0GAJBCuKnrU9bIcT4L20gd2F4Y14ccyjlf8UiUi192IX6yM9OjT
+    #     +TuXwZgqnTOq6piVgr+FTSa24qSvaXb5z/mJDLlk23npecTouLg83TNSn3R6fYQr
+    #     d/Y9eXuUJ8U7/qTh2Ulz071AO9KzPOmleYPTx4Xty4xAtWi1QE5NHW9/Ajlv5OtO
+    #     OnMNWIs7ssDJBsB7VFC8hcwf79jz7kC0xmQqDfw51Xhhk04kla+v+HZcFW2AO9so
+    #     6ZdVHHQnIbJa7yQJKZ+hK49IOoBR6JgdB5kymoplLLiuqZSYTcwSBZ72FYTm3iAr
+    #     jzvt1hxpxVDmXvRnkhRrIRhK4QgJL0jRmirBjDY+PYYd7bdRIjN7WNZLFsgplnS8
+    #     9w6CwG32pRlm0c8kkiQ7FXA6BYCqOsDI8f1VGQv331OpR2Ck+FTv+L7DAmg6l37W
+    #     +LB9LGh4OAp68ImTjqf6ioGKG0RBSznwME+r4nXtT1S/qLR6ASWUS4ViWRhbRlNK
+    #     XWyb96wrUlv+E8I=
+    #     -----END CERTIFICATE-----
+
+  # -- *DEPRECATED:* Instead, use `configs.credentialTemplates` and/or `configs.repositories`
+  repositoryCredentials: {}
+
+  # -- Repository credentials to be used as Templates for other repos
+  ## Creates a secret for each key/value specified below to create repository credentials
+  credentialTemplates: {}
+    # github-enterprise-creds-1:
+    #   url: https://github.com/argoproj
+    #   githubAppID: 1
+    #   githubAppInstallationID: 2
+    #   githubAppEnterpriseBaseUrl: https://ghe.example.com/api/v3
+    #   githubAppPrivateKey: |
+    #     -----BEGIN OPENSSH PRIVATE KEY-----
+    #     ...
+    #     -----END OPENSSH PRIVATE KEY-----
+    # https-creds:
+    #   url: https://github.com/argoproj
+    #   password: my-password
+    #   username: my-username
+    # ssh-creds:
+    #  url: git@github.com:argoproj-labs
+    #  sshPrivateKey: |
+    #    -----BEGIN OPENSSH PRIVATE KEY-----
+    #    ...
+    #    -----END OPENSSH PRIVATE KEY-----
+
+  # -- Annotations to be added to `configs.credentialTemplates` Secret
+  credentialTemplatesAnnotations: {}
+
+  # -- Repositories list to be used by applications
+  ## Creates a secret for each key/value specified below to create repositories
+  ## Note: the last example in the list would use a repository credential template, configured under "configs.repositoryCredentials".
+  repositories: {}
+    # istio-helm-repo:
+    #   url: https://storage.googleapis.com/istio-prerelease/daily-build/master-latest-daily/charts
+    #   name: istio.io
+    #   type: helm
+    # private-helm-repo:
+    #   url: https://my-private-chart-repo.internal
+    #   name: private-repo
+    #   type: helm
+    #   password: my-password
+    #   username: my-username
+    # private-repo:
+    #   url: https://github.com/argoproj/private-repo
+
+  # -- Annotations to be added to `configs.repositories` Secret
+  repositoriesAnnotations: {}
+
+  secret:
+    # -- Create the argocd-secret
+    createSecret: true
+    # -- Annotations to be added to argocd-secret
+    annotations: {}
+
+    # -- Shared secret for authenticating GitHub webhook events
+    githubSecret: ""
+    # -- Shared secret for authenticating GitLab webhook events
+    gitlabSecret: ""
+    # -- Shared secret for authenticating BitbucketServer webhook events
+    bitbucketServerSecret: ""
+    # -- UUID for authenticating Bitbucket webhook events
+    bitbucketUUID: ""
+    # -- Shared secret for authenticating Gogs webhook events
+    gogsSecret: ""
+
+    # -- add additional secrets to be added to argocd-secret
+    ## Custom secrets. Useful for injecting SSO secrets into environment variables.
+    ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
+    ## Note that all values must be non-empty.
+    extra:
+      {}
+      # LDAP_PASSWORD: "mypassword"
+
+    # -- Argo TLS Data
+    argocdServerTlsConfig:
+      {}
+      # key:
+      # crt: |
+      #   -----BEGIN CERTIFICATE-----
+      #   <cert data>
+      #   -----END CERTIFICATE-----
+      #   -----BEGIN CERTIFICATE-----
+      #   <ca cert data>
+      #   -----END CERTIFICATE-----
+
+    # -- Bcrypt hashed admin password
+    ## Argo expects the password in the secret to be bcrypt hashed. You can create this hash with
+    ## `htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/'`
+    argocdServerAdminPassword: ""
+    # -- Admin password modification time. Eg. `"2006-01-02T15:04:05Z"`
+    # @default -- `""` (defaults to current time)
+    argocdServerAdminPasswordMtime: ""
+
+  # -- Define custom [CSS styles] for your argo instance.
+  # This setting will automatically mount the provided CSS and reference it in the argo configuration.
+  # @default -- `""` (See [values.yaml])
+  ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/custom-styles/
+  styles: ""
+  # styles: |
+  #  .nav-bar {
+  #    background: linear-gradient(to bottom, #999, #777, #333, #222, #111);
+  #  }
+
+openshift:
+  # -- enables using arbitrary uid for argo repo server
+  enabled: false
+
 applicationSet:
-  # -- Enable ApplicationSet controller
+  # -- Enable Application Set controller
   enabled: true
 
   # -- Application Set controller name string
   name: applicationset-controller
 
-  # -- The number of ApplicationSet controller pods to run
+  # -- The number of controller pods to run
   replicaCount: 1
 
-  ## ApplicationSet controller Pod Disruption Budget
-  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  pdb:
-    # -- Deploy a [PodDisruptionBudget] for the ApplicationSet controller
-    enabled: false
-    # -- Labels to be added to ApplicationSet controller pdb
-    labels: {}
-    # -- Annotations to be added to ApplicationSet controller pdb
-    annotations: {}
-    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-    # @default -- `""` (defaults to 0 if not specified)
-    minAvailable: ""
-    # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-    ## Has higher precedence over `applicationSet.pdb.minAvailable`
-    maxUnavailable: ""
-
-  ## ApplicationSet controller image
   image:
     # -- Repository to use for the application set controller
     # @default -- `""` (defaults to global.image.repository)
@@ -2051,10 +1998,6 @@ applicationSet:
     # -- Image pull policy for the application set controller
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
-
-  # -- If defined, uses a Secret to pull an image from a private Docker registry or repository.
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
 
   args:
     # -- The default metric address
@@ -2069,13 +2012,6 @@ applicationSet:
     debug: false
     # -- Enable dry run mode
     dryRun: false
-
-  # -- ApplicationSet controller log format. Either `text` or `json`
-  # @default -- `""` (defaults to global.logging.format)
-  logFormat: ""
-  # -- ApplicationSet controller log level. One of: `debug`, `info`, `warn`, `error`
-  # @default -- `""` (defaults to global.logging.level)
-  logLevel: ""
 
   # -- Additional containers to be added to the applicationset controller pod
   extraContainers: []
@@ -2115,6 +2051,9 @@ applicationSet:
       # -- Prometheus ServiceMonitor labels
       additionalLabels: {}
 
+  # -- If defined, uses a Secret to pull an image from a private Docker registry or repository.
+  imagePullSecrets: []
+
   ## Application set service configuration
   service:
     # -- Application set service annotations
@@ -2131,8 +2070,6 @@ applicationSet:
     create: true
     # -- Annotations to add to the service account
     annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
     # -- The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
@@ -2173,7 +2110,11 @@ applicationSet:
   nodeSelector: {}
 
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations: 
+    - key: system
+      operator: Equal
+      value: 'true'
+      effect: NoExecute
 
   # -- Assign custom [affinity] rules
   affinity: {}
@@ -2193,6 +2134,7 @@ applicationSet:
 
   # -- List of extra cli args to add
   extraArgs: []
+    # - --loglevel=warn
 
   # -- Environment variables to pass to the controller
   extraEnv: []
@@ -2252,9 +2194,8 @@ applicationSet:
         #   hosts:
         #     - argocd-applicationset.example.com
 
-## Notifications controller
 notifications:
-  # -- Enable notifications controller
+  # -- Enable Notifications controller
   enabled: true
 
   # -- Notifications controller name string
@@ -2266,23 +2207,6 @@ notifications:
   # -- Argo CD dashboard url; used in place of {{.context.argocdUrl}} in templates
   argocdUrl:
 
-  ## Notifications controller Pod Disruption Budget
-  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  pdb:
-    # -- Deploy a [PodDisruptionBudget] for the notifications controller
-    enabled: false
-    # -- Labels to be added to notifications controller pdb
-    labels: {}
-    # -- Annotations to be added to notifications controller pdb
-    annotations: {}
-    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-    # @default -- `""` (defaults to 0 if not specified)
-    minAvailable: ""
-    # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-    ## Has higher precedence over `notifications.pdb.minAvailable`
-    maxUnavailable: ""
-
-  ## Notifications controller image
   image:
     # -- Repository to use for the notifications controller
     # @default -- `""` (defaults to global.image.repository)
@@ -2295,11 +2219,14 @@ notifications:
     imagePullPolicy: ""
 
   # -- Secrets with credentials to pull images from a private registry
-  # @default -- `[]` (defaults to global.imagePullSecrets)
   imagePullSecrets: []
 
   # -- [Node selector]
   nodeSelector: {}
+
+  # -- The deployment strategy to use to replace existing pods with new ones
+  updateStrategy:
+    type: Recreate
 
   # -- Define user-defined context
   ## For more information: https://argocd-notifications.readthedocs.io/en/stable/templates/#defining-user-defined-context
@@ -2313,6 +2240,10 @@ notifications:
 
     # -- key:value pairs of annotations to be added to the secret
     annotations: {}
+
+    # -- The name of the secret to use.
+    ## If not set and create is true, the default name 'argocd-notifications-secret' is used
+    name: ""
 
     # -- Generic key:value pairs to be inserted into the secret
     ## Can be used for templates, notification services etc. Some examples given below.
@@ -2330,26 +2261,16 @@ notifications:
       # email-password:
         # For more information: https://argocd-notifications.readthedocs.io/en/stable/services/email/
 
+  # -- Set the logging level. (One of: `debug`, `info`, `warn`, `error`)
+  logLevel: info
   # -- Application controller log format. Either `text` or `json`
-  # @default -- `""` (defaults to global.logging.format)
-  logFormat: ""
-  # -- Application controller log level. One of: `debug`, `info`, `warn`, `error`
-  # @default -- `""` (defaults to global.logging.level)
-  logLevel: ""
+  logFormat: text
 
   # -- Extra arguments to provide to the controller
   extraArgs: []
 
   # -- Additional container environment variables
   extraEnv: []
-
-  # -- envFrom to pass to the controller
-  # @default -- `[]` (See [values.yaml])
-  extraEnvFrom: []
-    # - configMapRef:
-    #     name: config-map-name
-    # - secretRef:
-    #     name: secret-name
 
   # -- List of extra mounts to add (normally used with extraVolumes)
   extraVolumeMounts: []
@@ -2392,9 +2313,11 @@ notifications:
   # -- Configures notification services such as slack, email or custom webhook
   # @default -- See [values.yaml]
   ## For more information: https://argocd-notifications.readthedocs.io/en/stable/services/overview/
-  notifiers: {}
+  notifiers:
     # service.slack: |
     #   token: $slack-token
+#     service.telegram: |
+#       token: 5605868669:AAFj3qPXIXDOJHtI_z8DbdEbnJLN2Z4zs1E
 
   # -- Annotations to be applied to the controller Pods
   podAnnotations: {}
@@ -2402,11 +2325,12 @@ notifications:
   # -- Labels to be applied to the controller Pods
   podLabels: {}
 
+  # -- Pod Security Context
+  securityContext:
+    runAsNonRoot: true
+
   # -- Container Security Context
   containerSecurityContext: {}
-
-  # -- Priority class for the controller pods
-  priorityClassName: ""
 
   # -- Resource limits and requests for the controller
   resources: {}
@@ -2428,15 +2352,17 @@ notifications:
     # -- Annotations applied to created service account
     annotations: {}
 
-    # -- Labels applied to created service account
-    labels: {}
   cm:
     # -- Whether helm chart creates controller config map
     create: true
 
+    # -- The name of the config map to use.
+    ## If not set and create is true, the default name 'argocd-notifications-cm' is used
+    name: ""
+
   # -- Contains centrally managed global application subscriptions
   ## For more information: https://argocd-notifications.readthedocs.io/en/stable/subscriptions/
-  subscriptions: []
+  subscriptions:
     # # subscription for on-sync-status-unknown trigger notifications
     # - recipients:
     #   - slack:test2
@@ -2449,10 +2375,18 @@ notifications:
     #   selector: test=true
     #   triggers:
     #   - on-sync-status-unknown
+    - recipients:
+      - telegram:argocddevurbox
+      triggers:
+      - on-sync-status-unknown
+      - on-sync-failed
+      - on-health-degraded
+      - on-deployed
+      - on-sync-succeeded
 
   # -- The notification template is used to generate the notification content
   ## For more information: https://argocd-notifications.readthedocs.io/en/stable/templates/
-  templates: {}
+  templates:
     # template.app-deployed: |
     #   email:
     #     subject: New version of an application {{.app.metadata.name}} is up and running.
@@ -2666,13 +2600,43 @@ notifications:
     #         {{end}}
     #         ]
     #       }]
-
+    template.app-sync-failed: |
+      message: |
+          🚀The sync operation of application *{{.app.metadata.name}}* has *failed* 🛑🛑🛑
+              {{if eq .app.spec.destination.server  "https://kubernetes.default.svc"}}*Cluster*: EKS-PRODUCTION{{ else }}*Cluster*: EKS-DEV{{end}}
+              *Namespace*: {{.app.spec.destination.namespace}}
+              At {{.app.status.operationState.finishedAt}} 
+              With the following error ⚠️ : *{{.app.status.operationState.message}}*
+    template.app-sync-running: |
+      message: |
+          🚀The sync operation of application *{{.app.metadata.name}}* 
+              Has *started* ♿️ ♿️ ♿️ 
+              {{if eq .app.spec.destination.server  "https://kubernetes.default.svc"}}*Cluster*: EKS-PRODUCTION{{ else }}*Cluster*: EKS-DEV{{end}}
+              *Namespace*: {{.app.spec.destination.namespace}}
+              at {{.app.status.operationState.startedAt}}
+    template.app-sync-status-unknown: |
+      message: |
+          🚀Application *{{.app.metadata.name}}* 
+              sync is *'Unknown'*
+              {{if eq .app.spec.destination.server  "https://kubernetes.default.svc"}}*Cluster*: EKS-PRODUCTION{{ else }}*Cluster*: EKS-DEV{{end}}
+              *Namespace*: {{.app.spec.destination.namespace}}
+              Application details: {{.context.argocdUrl}}/applications/{{.app.metadata.name}}.
+    template.app-sync-succeeded: |
+      message: |
+         🚀*Application* : {{.app.metadata.name}} 
+              {{if eq .app.spec.destination.server  "https://kubernetes.default.svc"}}*Cluster*: EKS-PRODUCTION{{ else }}*Cluster*: EKS-DEV{{end}}
+              *Namespace*: {{.app.spec.destination.namespace}}
+              Has been *Successfully* synced ✅. *Time at* : {{.app.status.operationState.finishedAt}}
   # -- [Tolerations] for use with node taints
-  tolerations: []
+  tolerations: 
+    - key: system
+      operator: Equal
+      value: 'true'
+      effect: NoExecute
 
   # -- The trigger defines the condition when the notification should be sent
   ## For more information: https://argocd-notifications.readthedocs.io/en/stable/triggers/
-  triggers: {}
+  triggers:
     # trigger.on-deployed: |
     #   - description: Application is synced and healthy. Triggered once per commit.
     #     oncePer: app.status.sync.revision
@@ -2704,6 +2668,26 @@ notifications:
     #     send:
     #     - app-sync-succeeded
     #     when: app.status.operationState.phase in ['Succeeded']
+    trigger.on-sync-failed: |
+      - description: Application syncing has failed
+        send:
+        - app-sync-failed
+        when: app.status.operationState.phase in ['Error', 'Failed']
+    trigger.on-sync-running: |
+      - description: Application is being synced
+        send:
+        - app-sync-running
+        when: app.status.operationState.phase in ['Running']
+    trigger.on-sync-status-unknown: |
+      - description: Application status is 'Unknown'
+        send:
+        - app-sync-status-unknown
+        when: app.status.sync.status == 'Unknown'
+    trigger.on-sync-succeeded: |
+      - description: Application syncing has succeeded
+        send:
+        - app-sync-succeeded
+        when: app.status.operationState.phase in ['Succeeded']
     #
     # For more information: https://argocd-notifications.readthedocs.io/en/stable/triggers/#default-triggers
     # defaultTriggers: |
@@ -2721,23 +2705,6 @@ notifications:
       updateStrategy:
         type: Recreate
 
-      ## Slack bot Pod Disruption Budget
-      ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-      pdb:
-        # -- Deploy a [PodDisruptionBudget] for the Slack bot
-        enabled: false
-        # -- Labels to be added to Slack bot pdb
-        labels: {}
-        # -- Annotations to be added to Slack bot pdb
-        annotations: {}
-        # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-        # @default -- `""` (defaults to 0 if not specified)
-        minAvailable: ""
-        # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-        ## Has higher precedence over `notifications.bots.slack.pdb.minAvailable`
-        maxUnavailable: ""
-
-      ## Slack bot imabe
       image:
         # -- Repository to use for the Slack bot
         # @default -- `""` (defaults to global.image.repository)
@@ -2750,7 +2717,6 @@ notifications:
         imagePullPolicy: ""
 
       # -- Secrets with credentials to pull images from a private registry
-      # @default -- `[]` (defaults to global.imagePullSecrets)
       imagePullSecrets: []
 
       service:
@@ -2792,7 +2758,11 @@ notifications:
       affinity: {}
 
       # -- [Tolerations] for use with node taints
-      tolerations: []
+      tolerations: 
+        - key: system
+          operator: Equal
+          value: 'true'
+          effect: NoExecute
 
       # -- [Node selector]
       nodeSelector: {}
