@@ -18,7 +18,7 @@ roles:
 replicas: 3
 minimumMasterNodes: 2
 
-esMajorVersion: "7"
+esMajorVersion: ""
 
 clusterDeprecationIndexing: "false"
 
@@ -98,7 +98,6 @@ networkHost: "0.0.0.0"
 
 volumeClaimTemplate:
   accessModes: ["ReadWriteOnce"]
-  storageClassName: "hostpath"
   resources:
     requests:
       storage: 30Gi
