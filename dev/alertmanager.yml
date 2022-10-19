@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: alertmanager
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: ''
+    namespace: monitoring
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: values
+    repoURL: 'https://github.com/tainguyen2604/test-argocd'
+    targetRevision: HEAD
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME
+          value: prometheus-community
+        - name: REPO_URL
+          value: 'https://prometheus-community.github.io/helm-charts'
+        - name: CHART_NAME
+          value: alertmanager
+        - name: COMMAND
+          value: '--values alertmanager-values.yml'
+        - name: CHART_VERSION
+          value: 0.21.0
+  project: default
+  syncPolicy:
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
