@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: argocd
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: values
+    repoURL: 'https://github.com/tainguyen2604/test-argocd'
+    targetRevision: main
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME
+          value: argo
+        - name: REPO_URL
+          value: 'https://argoproj.github.io/argo-helm'
+        - name: CHART_NAME
+          value: argo-cd
+        - name: COMMAND
+          value: '--values argocd.yml'
+        - name: CHART_VERSION
+          value: 5.6.0
+  project: default
+  syncPolicy:
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m
