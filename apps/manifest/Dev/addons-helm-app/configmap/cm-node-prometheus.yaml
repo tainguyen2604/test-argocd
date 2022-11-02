@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  db.yml: |-
+    - targets:
+      - 30.0.132.230:9100
+      labels:
+        node: mongo-dev
+kind: ConfigMap
+metadata:
+  name: prometheus-configmap
+  namespace: prometheus-test

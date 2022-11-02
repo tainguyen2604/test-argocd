@@ -1,0 +1,87 @@
+apiVersion: v1
+data:
+  alert-custom.yaml: |-
+    groups:
+      - name: Host out of disk space EKS_Production
+        rules:
+          - alert: HostOutOfDiskSpace
+            expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 * on(node) group_left(eks_amazonaws_com_nodegroup) kubelet_node_name < 10
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Host Out Of Disk Space\n - IP : {{ $labels.instance }}\n - Hostname : {{ $labels.eks_amazonaws_com_nodegroup }}"
+              description: "HostOutOfDiskSpace"
+      - name: Host high CPU 
+        rules:
+          - alert: HostHighCpuLoad
+            expr: 100 - (avg by(instance,node)  (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) * on(node) group_left(eks_amazonaws_com_nodegroup) kubelet_node_name > 90
+            for: 1m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Host High Cpu Load \n - IP : {{ $labels.instance }} \n - Hostname : {{ $labels.eks_amazonaws_com_nodegroup }} \n - Current CPU : {{ $value }} %"
+      - name: Node Seem Down
+        rules:
+          - alert: NodeDown
+            expr: kube_node_status_condition{job="kubernetes-service-endpoints",condition="Ready",status="true"} * on(node) group_left(eks_amazonaws_com_nodegroup) kubelet_node_name == 0
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Node Down\n - IP : {{ $labels.instance }}\n - Instance Type : EKS_Production\n - Hostname : {{ $labels.eks_amazonaws_com_nodegroup }}"
+              description: "Node Seem Down after 2m"
+      - name: Pod NotReady
+        rules:
+          - alert: PodNotReady
+            expr: sum by (namespace, pod) (max by(namespace, pod) (kube_pod_status_phase{job="kubernetes-service-endpoints", phase=~"Pending|Unknown"}) * on(namespace, pod) group_left(owner_kind) max by(namespace, pod, owner_kind) (kube_pod_owner{owner_kind!="Job"})) > 0
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Pod Not Ready \n - Pod : {{ $labels.pod }} \n - Namespace : {{ $labels.namespace }}"
+              description: "Pod Seem Down after 2m"
+      - name: Pod Restart
+        rules:
+          - alert: PodRestart
+            expr: sum(increase(kube_pod_container_status_restarts_total{}[2m]))by(namespace,pod)>0
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Pod Restart \n - Pod : {{ $labels.pod }} \n - <b>Namespace</b> : {{ $labels.namespace }}"
+              description: "Pod Restart"
+      - name: PodCrashLooping
+        rules:
+          - alert: PodCrashLooping
+            expr: kube_pod_container_status_waiting_reason{reason=~"CrashLoopBackOff"} > 0
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: "PodCrashLooping \n - Pod : {{ $labels.pod }} \n - Namespace : {{ $labels.namespace }}"
+              description: "PodCrashLooping"
+      - name: PersistentVolumeErrors
+        rules:
+          - alert: PersistentVolumeErrors
+            expr: kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="kubernetes-service-endpoints"} > 0
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "PersistentVolumeErrors \n - Pod : {{ $labels.pod }}"
+              description: "PersistentVolumeErrors"
+      - name: HostNetworkReceiveErrors
+        rules:
+          - alert: HostNetworkReceiveErrors
+            expr: rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Host Network Receive Errors \n - Instance : {{ $labels.instance }}"
+              description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+kind: ConfigMap
+metadata:
+  name: prometheus-rule
+  namespace: prometheus-test
