@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dind
+  namespace: test-gitops-cicd
+spec:
+  selector:
+    workload: deployment-docker-in-docker-dind
+  ports:
+    - protocol: TCP
+      port: 2376
+      targetPort: 2376

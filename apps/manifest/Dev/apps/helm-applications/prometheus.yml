@@ -1,17 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus
+  name: prometheus-dev
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: ''
-    namespace: monitoring
-    server: 'https://kubernetes.default.svc'
+    namespace: urbox-system
+    server: 'https://3BB5B54B3C9FD99C2B2527906D78A1E0.gr7.ap-southeast-1.eks.amazonaws.com'
   source:
-    path: values
-    repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
-    targetRevision: HEAD
+    path: apps/manifest/dev/values
+    repoURL: 'git@github.com:urbox-vn/gitops-application-k8s.git'
+    targetRevision: main
     plugin:
       name: helm-resolver
       env:
@@ -22,7 +24,7 @@ spec:
         - name: CHART_NAME
           value: prometheus
         - name: COMMAND
-          value: '--values prometheus.yml'
+          value: '--values prometheus-values.yml'
         - name: CHART_VERSION
           value: 15.10.2
   project: default

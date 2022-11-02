@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metrics-server
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: ''
+    namespace: kube-system
+    server: 'https://3BB5B54B3C9FD99C2B2527906D78A1E0.gr7.ap-southeast-1.eks.amazonaws.com'
+  source:
+    path: apps/manifest/dev/values
+    repoURL: 'git@github.com:urbox-vn/gitops-application-k8s.git'
+    targetRevision: main
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME
+          value: my-repo
+        - name: REPO_URL
+          value: 'https://charts.bitnami.com/bitnami'
+        - name: CHART_NAME
+          value: metrics-server
+        - name: COMMAND
+          value: '--values metrics-server.yml'
+        - name: CHART_VERSION
+          value: 6.2.1
+  project: default
+  syncPolicy:
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: 3 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

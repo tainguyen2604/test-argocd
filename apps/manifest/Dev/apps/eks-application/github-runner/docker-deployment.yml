@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dind
+  namespace: test-gitops-cicd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      workload: deployment-docker-in-docker-dind
+  template:
+    metadata:
+      labels:
+        workload: deployment-docker-in-docker-dind
+    spec:
+      containers:
+      - command:
+        - dockerd
+        - --host=unix:///var/run/docker.sock
+        - --host=tcp://0.0.0.0:2376
+        env:
+        - name: DOCKER_TLS_CERTDIR
+        image: docker:20.10.9-dind
+        imagePullPolicy: IfNotPresent
+        name: dind
+        resources: {}
+        securityContext:
+          privileged: true
+          readOnlyRootFilesystem: false
+        stdin: true
+        tty: true
+        volumeMounts:
+        - mountPath: /var/lib/docker
+          name: dind-storage
+      volumes:
+      - name: dind-storage
+        persistentVolumeClaim:
+          claimName: dind
