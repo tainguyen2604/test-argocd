@@ -7,5 +7,5 @@ data:
         node: mongo-dev
 kind: ConfigMap
 metadata:
-  name: prometheus-configmap
+  name: dev-prometheus-configmap
   namespace: prometheus-test

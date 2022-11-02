@@ -83,5 +83,5 @@ data:
               description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 kind: ConfigMap
 metadata:
-  name: prometheus-rule
+  name: dev-prometheus-rule
   namespace: prometheus-test
