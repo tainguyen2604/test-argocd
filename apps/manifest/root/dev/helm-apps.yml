@@ -13,6 +13,8 @@ spec:
     path: apps/manifest/Dev/apps/helm-applications
     repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
     targetRevision: main
+    directory:
+      recurse: true
   project: default
   syncPolicy:
     automated:

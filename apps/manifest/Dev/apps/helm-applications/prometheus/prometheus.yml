@@ -1,16 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-alertmanager
+  name: dev-prometheus
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: ''
-    namespace: urbox-system
+    namespace: prometheus-test
     server: 'https://kubernetes.default.svc'
   source:
-    path: apps/manifest/Dev/apps/helm-applications/values
-    repoURL: 'git@github.com:urbox-vn/gitops-application-k8s.git'
+    path: apps/manifest/Dev/apps/helm-applications/prometheus
+    repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
     targetRevision: main
     plugin:
       name: helm-resolver
@@ -20,11 +22,11 @@ spec:
         - name: REPO_URL
           value: 'https://prometheus-community.github.io/helm-charts'
         - name: CHART_NAME
-          value: alertmanager
+          value: prometheus
         - name: COMMAND
-          value: '--values alertmanager-values.yml'
+          value: '--values prometheus-values.yml'
         - name: CHART_VERSION
-          value: 0.21.0
+          value: 15.10.2
   project: default
   syncPolicy:
     syncOptions:
