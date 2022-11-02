@@ -100,7 +100,7 @@ server:
     scrape_timeout: 5s
     evaluation_interval: 30s
   ingress:
-    enabled: true
+    enabled: false
     ingressClassName: nginx
     hosts:
       - system-prometheus.urbox.services
