@@ -10,7 +10,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: apps/manifest/Dev/apps/helm-applications/alertmanager
-    repoURL: 'git@github.com:urbox-vn/gitops-application-k8s.git'
+    repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
     targetRevision: main
     plugin:
       name: helm-resolver
