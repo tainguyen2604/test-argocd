@@ -21,7 +21,7 @@ spec:
         - name: CHART_NAME
           value: {{ .ChartName }}
         - name: COMMAND
-          value: '--values {{ $.Values.global.server }}-values.yml'
+          value: '--values {{ $.Values.global.env }}-values.yml'
         - name: CHART_VERSION
           value: {{ .ChartVersion }}
   destination:
