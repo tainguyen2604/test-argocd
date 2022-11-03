@@ -1,8 +1,8 @@
 global:
   env: dev
   valuesFile: values.yaml #default
-  server: in-cluster
-  repoURL: 'git@github.com:urbox-vn/gitops-application-k8s.git'
+  server: https://kubernetes.default.svc
+  repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
   repoBranch: 'main'
 
 argocdApplications:
