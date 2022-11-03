@@ -4,11 +4,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $.Values.global.env }}-{{ .name }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
   namespace: argocd
   labels:
     argocd.argoproj.io/env: {{ $.Values.global.env }}
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   project: {{ $.Values.global.project | default "default" | quote }}
   source:
