@@ -10,7 +10,7 @@ spec:
   source:
     repoURL:  {{ $.Values.global.repoURL }}
     targetRevision: {{  $.Values.global.repoBranch | default "main" | quote }}
-    path: charts/helm-application/{{ .Values.global.env }}/{{ .name }}
+    path: charts/helm-application/{{ $.Values.global.env }}/{{ .name }}
     plugin:
       name: helm-resolver
       env:
