@@ -10,16 +10,17 @@ argocdApplications:
     RepoName: metrics-server
     RepoURL: 'https://charts.bitnami.com/bitnami'
     name: metrics-server
-    namespace: urbox-system
+    namespace: prometheus-test
     ChartName: "metrics-server"
     ChartVersion: 6.2.1
-  metric-server:
-    RepoName: metrics-server
-    RepoURL: 'https://charts.bitnami.com/bitnami'
-    name: metrics-server
+  prometheus:
+    RepoName: prometheus-community
+    RepoURL: 'https://prometheus-community.github.io/helm-charts'
+    name: prometheus
     namespace: urbox-system
-    ChartName: "metrics-server"
-    ChartVersion: 6.2.1
+    ChartName: "prometheus"
+    ChartVersion: 15.10.2
+  
 #    targetRevision: HEAD
 #     helm: true
 #   helmHooks:

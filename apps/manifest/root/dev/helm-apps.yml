@@ -1,3 +1,30 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: dev-helm-applications
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   destination:
+#     name: ''
+#     namespace: argocd
+#     server: 'https://kubernetes.default.svc'
+#   source:
+#     path: apps/manifest/Dev/apps/helm-applications
+#     repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
+#     targetRevision: main
+#     directory:
+#       recurse: true
+#   project: default
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+
+
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -10,11 +37,12 @@ spec:
     namespace: argocd
     server: 'https://kubernetes.default.svc'
   source:
-    path: apps/manifest/Dev/apps/helm-applications
-    repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
+    path: apps/manifest/root/argocd-helm
+    repoURL: 'https://github.com/tainguyen2604/test-argocd'
     targetRevision: main
-    directory:
-      recurse: true
+    helm:
+      valueFiles:
+        - dev-values.yaml
   project: default
   syncPolicy:
     automated:
