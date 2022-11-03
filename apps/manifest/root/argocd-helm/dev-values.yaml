@@ -16,16 +16,16 @@ argocdApplications:
     namespace: prometheus-test
     ChartName: "metrics-server"
     ChartVersion: 6.2.1
-  # prometheus:
-  #   UseCustomName:
-  #     enable: false
-  #     name: "hello"
-  #   RepoName: prometheus-community
-  #   RepoURL: 'https://prometheus-community.github.io/helm-charts'
-  #   name: prometheus
-  #   namespace: prometheus-test
-  #   ChartName: "prometheus"
-  #   ChartVersion: 15.10.2
+  prometheus:
+    UseCustomName:
+      enable: false
+      name: "hello"
+    RepoName: prometheus-community
+    RepoURL: 'https://prometheus-community.github.io/helm-charts'
+    name: prometheus
+    namespace: prometheus-test
+    ChartName: "prometheus"
+    ChartVersion: 15.10.2
   
 #    targetRevision: HEAD
 #     helm: true
