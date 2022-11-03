@@ -51,4 +51,4 @@ spec:
     syncOptions:
     - PruneLast=true
     - CreateNamespace=true
-    - PrunePropagationPolicy=foreground
+    - PrunePropagationPolicy=orphan
