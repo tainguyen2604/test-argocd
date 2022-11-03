@@ -29,8 +29,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: dev-helm-applications
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: ''
