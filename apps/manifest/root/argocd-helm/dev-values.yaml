@@ -17,7 +17,7 @@ argocdApplications:
     RepoName: prometheus-community
     RepoURL: 'https://prometheus-community.github.io/helm-charts'
     name: prometheus
-    namespace: urbox-system
+    namespace: prometheus-test
     ChartName: "prometheus"
     ChartVersion: 15.10.2
   
