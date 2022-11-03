@@ -1,0 +1,36 @@
+global:
+  env: dev
+  valuesFile: values.yaml #default
+  server: dev
+  repoURL: 'git@github.com:urbox-vn/gitops-application-k8s.git'
+  repoBranch: 'main'
+
+argocdApplications:
+  metric-server:
+    RepoName: metrics-server
+    RepoURL: 'https://charts.bitnami.com/bitnami'
+    name: metrics-server
+    namespace: urbox-system
+    ChartName: "metrics-server"
+    ChartVersion: 6.2.1
+#    targetRevision: HEAD
+#     helm: true
+#   helmHooks:
+#     disableAutomated: false
+#     disable: false
+#     name: helm-hooks
+#     namespace: helm-hooks
+# #    targetRevision: HEAD
+#   kustomizeGuestbook:
+#     RepoName: test
+#     RepoURL: 'https://airflow.apache.org'
+#     name: kustomize-guestbook
+#     namespace: kustomize-guestbook
+#     ChartVersion: 22.0.0
+# #    targetRevision: HEAD
+#   syncWaves:
+#     disableAutomated: false
+#     disable: false
+#     name: sync-waves
+#     namespace: sync-waves
+# #    targetRevision: HEAD

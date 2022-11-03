@@ -1,0 +1,148 @@
+---
+# Source: argocd-helm/templates/application.tpl
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-helm-hooks
+  namespace: argocd
+spec:
+  project: "default"
+  source:
+    repoURL:  git@github.com:urbox-vn/gitops-application-k8s.git
+    targetRevision: "main"
+    path: charts/helm-application/helm-hooks
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME 
+          value: 
+        - name: REPO_URL
+          value: 
+        - name: CHART_NAME
+          value: 
+        - name: COMMAND
+          value: '--values dev-values.yml'
+        - name: CHART_VERSION
+          value: 
+  destination:
+    namespace: helm-hooks
+    server: dev
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
+---
+# Source: argocd-helm/templates/application.tpl
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-kustomize-guestbook
+  namespace: argocd
+spec:
+  project: "default"
+  source:
+    repoURL:  git@github.com:urbox-vn/gitops-application-k8s.git
+    targetRevision: "main"
+    path: charts/helm-application/kustomize-guestbook
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME 
+          value: test
+        - name: REPO_URL
+          value: https://airflow.apache.org
+        - name: CHART_NAME
+          value: 
+        - name: COMMAND
+          value: '--values dev-values.yml'
+        - name: CHART_VERSION
+          value: 22.0.0
+  destination:
+    namespace: kustomize-guestbook
+    server: dev
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
+---
+# Source: argocd-helm/templates/application.tpl
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-helm-guestbook
+  namespace: argocd
+spec:
+  project: "default"
+  source:
+    repoURL:  git@github.com:urbox-vn/gitops-application-k8s.git
+    targetRevision: "main"
+    path: charts/helm-application/helm-guestbook
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME 
+          value: 
+        - name: REPO_URL
+          value: 
+        - name: CHART_NAME
+          value: 
+        - name: COMMAND
+          value: '--values dev-values.yml'
+        - name: CHART_VERSION
+          value: 
+  destination:
+    namespace: helm-guestbook
+    server: dev
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
+---
+# Source: argocd-helm/templates/application.tpl
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-sync-waves
+  namespace: argocd
+spec:
+  project: "default"
+  source:
+    repoURL:  git@github.com:urbox-vn/gitops-application-k8s.git
+    targetRevision: "main"
+    path: charts/helm-application/sync-waves
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME 
+          value: 
+        - name: REPO_URL
+          value: 
+        - name: CHART_NAME
+          value: 
+        - name: COMMAND
+          value: '--values dev-values.yml'
+        - name: CHART_VERSION
+          value: 
+  destination:
+    namespace: sync-waves
+    server: dev
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true

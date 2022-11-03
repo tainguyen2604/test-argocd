@@ -1,0 +1,42 @@
+{{- range $app := .Values.argocdApplications -}}
+{{ if not .disable }} 
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $.Values.global.env }}-{{ .name }}
+  namespace: argocd
+spec:
+  project: {{ $.Values.global.project | default "default" | quote }}
+  source:
+    repoURL:  {{ $.Values.global.repoURL }}
+    targetRevision: {{  $.Values.global.repoBranch | default "main" | quote }}
+    path: charts/helm-application/{{ .name }}
+    plugin:
+      name: helm-resolver
+      env:
+        - name: REPO_NAME 
+          value: {{ .RepoName }}
+        - name: REPO_URL
+          value: {{ .RepoURL }}
+        - name: CHART_NAME
+          value: {{ .ChartName }}
+        - name: COMMAND
+          value: '--values {{ $.Values.global.server }}-values.yml'
+        - name: CHART_VERSION
+          value: {{ .ChartVersion }}
+  destination:
+    namespace: {{ default "default" .namespace }}
+    server: {{ $.Values.global.server }}
+  syncPolicy:
+    {{- if not .disableAutomated }}
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+    {{- end }}
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
+---
+{{- end }}
+{{- end }}
