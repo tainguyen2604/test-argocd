@@ -7,6 +7,9 @@ global:
 
 argocdApplications:
   metric-server:
+    UseCustomName:
+      enable: false
+      name: "dasd"
     RepoName: metrics-server
     RepoURL: 'https://charts.bitnami.com/bitnami'
     name: metrics-server
@@ -14,6 +17,9 @@ argocdApplications:
     ChartName: "metrics-server"
     ChartVersion: 6.2.1
   prometheus:
+    UseCustomName:
+      enable: false
+      name: "hello"
     RepoName: prometheus-community
     RepoURL: 'https://prometheus-community.github.io/helm-charts'
     name: prometheus

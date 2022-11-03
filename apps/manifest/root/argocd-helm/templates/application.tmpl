@@ -3,7 +3,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  {{- if .UseCustomName.enable }}
+  name: {{ .UseCustomName.name }}
+  {{ else }}
   name: {{ $.Values.global.env }}-{{ .name }}
+  {{ end }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   namespace: argocd
@@ -41,6 +45,7 @@ spec:
     syncOptions:
       - PruneLast=true
       - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
 ---
 {{- end }}
 {{- end }}
