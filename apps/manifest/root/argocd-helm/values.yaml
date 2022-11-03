@@ -13,6 +13,13 @@ argocdApplications:
     namespace: urbox-system
     ChartName: "metrics-server"
     ChartVersion: 6.2.1
+  metric-server:
+    RepoName: metrics-server
+    RepoURL: 'https://charts.bitnami.com/bitnami'
+    name: metrics-server
+    namespace: urbox-system
+    ChartName: "metrics-server"
+    ChartVersion: 6.2.1
 #    targetRevision: HEAD
 #     helm: true
 #   helmHooks:
