@@ -5,12 +5,14 @@ kind: Application
 metadata:
   name: {{ $.Values.global.env }}-{{ .name }}
   namespace: argocd
+  labels:
+    argocd.argoproj.io/env: {{ $.Values.global.env }}
 spec:
   project: {{ $.Values.global.project | default "default" | quote }}
   source:
     repoURL:  {{ $.Values.global.repoURL }}
     targetRevision: {{  $.Values.global.repoBranch | default "main" | quote }}
-    path: charts/helm-application/{{ $.Values.global.env }}/{{ .name }}
+    path: charts/helm-application/{{ .name }}
     plugin:
       name: helm-resolver
       env:
