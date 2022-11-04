@@ -8,8 +8,6 @@ metadata:
   {{ else }}
   name: {{ $.Values.global.env }}-{{ .name }}
   {{ end }}
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
   namespace: argocd
   labels:
     argocd.argoproj.io/env: {{ $.Values.global.env }}
