@@ -19,8 +19,8 @@ argocdApplications:
   metrics-server:
     RepoName: my-repo
     RepoURL: 'https://charts.bitnami.com/bitnami'
-    name: metric-server
+    name: metrics-server
     namespace: prometheus-test
-    ChartName: "metric-server"
+    ChartName: "metrics-server"
     ChartVersion: 6.2.1
   
