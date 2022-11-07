@@ -6,24 +6,24 @@ global:
   repoBranch: 'main'
 
 argocdApplications:
-  prometheus:
-    UseCustomName:
-      enable: true
-      name: "prometheus-dev"
-    RepoName: prometheus-community
-    RepoURL: 'https://prometheus-community.github.io/helm-charts'
-    name: prometheus
-    namespace: urbox-system
-    ChartName: "prometheus"
-    ChartVersion: 15.10.2
-  metrics-server:
-    UseCustomName:
-      enable: true
-      name: "metrics-server"
-    RepoName: my-repo
-    RepoURL: 'https://charts.bitnami.com/bitnami'
-    name: metrics-server
-    namespace: kube-system
-    ChartName: "metrics-server"
-    ChartVersion: 6.2.1
+  # prometheus:
+  #   UseCustomName:
+  #     enable: true
+  #     name: "prometheus-dev"
+  #   RepoName: prometheus-community
+  #   RepoURL: 'https://prometheus-community.github.io/helm-charts'
+  #   name: prometheus
+  #   namespace: urbox-system
+  #   ChartName: "prometheus"
+  #   ChartVersion: 15.10.2
+  # metrics-server:
+  #   UseCustomName:
+  #     enable: true
+  #     name: "metrics-server"
+  #   RepoName: my-repo
+  #   RepoURL: 'https://charts.bitnami.com/bitnami'
+  #   name: metrics-server
+  #   namespace: kube-system
+  #   ChartName: "metrics-server"
+  #   ChartVersion: 6.2.1
   
