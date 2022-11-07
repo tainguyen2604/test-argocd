@@ -6,16 +6,6 @@ global:
   repoBranch: 'main'
 
 argocdApplications:
-  metric-server:
-    UseCustomName:
-      enable: false
-      name: "prometheus-dev"
-    RepoName: metrics-server
-    RepoURL: 'https://charts.bitnami.com/bitnami'
-    name: metrics-server
-    namespace: prometheus-test
-    ChartName: "metrics-server"
-    ChartVersion: 6.2.1
   prometheus:
     UseCustomName:
       enable: true
@@ -26,4 +16,14 @@ argocdApplications:
     namespace: urbox-system
     ChartName: "prometheus"
     ChartVersion: 15.10.2
+  metric-server:
+    UseCustomName:
+      enable: false
+      name: "prometheus-dev"
+    RepoName: my-repo
+    RepoURL: 'https://charts.bitnami.com/bitnami'
+    name: metric-server
+    namespace: prometheus-test
+    ChartName: "metric-server"
+    ChartVersion: 6.2.1
   
