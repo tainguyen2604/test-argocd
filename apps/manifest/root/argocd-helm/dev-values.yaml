@@ -1,6 +1,6 @@
 global:
   env: dev
-  valuesFile: values.yaml #default
+  valuesFile: values.yaml
   server: https://kubernetes.default.svc
   repoURL: 'https://github.com/tainguyen2604/test-argocd.git'
   repoBranch: 'main'
@@ -9,42 +9,21 @@ argocdApplications:
   metric-server:
     UseCustomName:
       enable: false
-      name: "dasd"
+      name: "prometheus-dev"
     RepoName: metrics-server
     RepoURL: 'https://charts.bitnami.com/bitnami'
     name: metrics-server
     namespace: prometheus-test
     ChartName: "metrics-server"
     ChartVersion: 6.2.1
-  # prometheus:
-  #   UseCustomName:
-  #     enable: false
-  #     name: "hello"
-  #   RepoName: prometheus-community
-  #   RepoURL: 'https://prometheus-community.github.io/helm-charts'
-  #   name: prometheus
-  #   namespace: prometheus-test
-  #   ChartName: "prometheus"
-  #   ChartVersion: 15.10.2
+  prometheus:
+    UseCustomName:
+      enable: true
+      name: "prometheus-dev"
+    RepoName: prometheus-community
+    RepoURL: 'https://prometheus-community.github.io/helm-charts'
+    name: prometheus
+    namespace: urbox-system
+    ChartName: "prometheus"
+    ChartVersion: 15.10.2
   
-#    targetRevision: HEAD
-#     helm: true
-#   helmHooks:
-#     disableAutomated: false
-#     disable: false
-#     name: helm-hooks
-#     namespace: helm-hooks
-# #    targetRevision: HEAD
-#   kustomizeGuestbook:
-#     RepoName: test
-#     RepoURL: 'https://airflow.apache.org'
-#     name: kustomize-guestbook
-#     namespace: kustomize-guestbook
-#     ChartVersion: 22.0.0
-# #    targetRevision: HEAD
-#   syncWaves:
-#     disableAutomated: false
-#     disable: false
-#     name: sync-waves
-#     namespace: sync-waves
-# #    targetRevision: HEAD

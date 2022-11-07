@@ -3,11 +3,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  {{- if .UseCustomName.enable }}
+  {{- if or .UseCustomName false }} 
   name: {{ .UseCustomName.name }}
   {{ else }}
   name: {{ $.Values.global.env }}-{{ .name }}
-  {{ end }}
+  {{ end -}}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
   namespace: argocd
   labels:
     argocd.argoproj.io/env: {{ $.Values.global.env }}
@@ -16,7 +18,7 @@ spec:
   source:
     repoURL:  {{ $.Values.global.repoURL }}
     targetRevision: {{  $.Values.global.repoBranch | default "main" | quote }}
-    path: charts/helm-application/{{ .name }}
+    path: applications/charts/helm-applications/{{ .name }}
     plugin:
       name: helm-resolver
       env:
@@ -27,18 +29,32 @@ spec:
         - name: CHART_NAME
           value: {{ .ChartName }}
         - name: COMMAND
+          {{- if or .UseCustomEnv false }} 
+          value: '--values {{ .UseCustomEnv.valuesName }}'
+          {{ else }}
           value: '--values {{ $.Values.global.env }}-values.yml'
+          {{- end }}
         - name: CHART_VERSION
           value: {{ .ChartVersion }}
   destination:
     namespace: {{ default "default" .namespace }}
+    {{- if or .UseCustomEnv false }}
+    server: {{ .UseCustomEnv.server }}
+    {{ else }}
     server: {{ $.Values.global.server }}
+    {{- end }}
   syncPolicy:
     {{- if not .disableAutomated }}
     automated:
-      prune: false
+      prune: true
       selfHeal: true
       allowEmpty: false
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
     {{- end }}
     syncOptions:
       - PruneLast=true
