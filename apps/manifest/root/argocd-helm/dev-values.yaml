@@ -16,7 +16,7 @@ argocdApplications:
     namespace: urbox-system
     ChartName: "prometheus"
     ChartVersion: 15.10.2
-  metric-server:
+  metrics-server:
     RepoName: my-repo
     RepoURL: 'https://charts.bitnami.com/bitnami'
     name: metric-server
