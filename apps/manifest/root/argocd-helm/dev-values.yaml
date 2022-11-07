@@ -17,9 +17,6 @@ argocdApplications:
     ChartName: "prometheus"
     ChartVersion: 15.10.2
   metric-server:
-    UseCustomName:
-      enable: false
-      name: "prometheus-dev"
     RepoName: my-repo
     RepoURL: 'https://charts.bitnami.com/bitnami'
     name: metric-server
