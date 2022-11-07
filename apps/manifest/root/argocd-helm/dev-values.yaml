@@ -26,11 +26,11 @@ argocdApplications:
   #   namespace: kube-system
   #   ChartName: "metrics-server"
   #   ChartVersion: 6.2.1
-  alertmanager:
-    RepoName: prometheus-community
-    RepoURL: 'https://prometheus-community.github.io/helm-charts'
-    name: alertmanager
-    namespace: urbox-system
-    ChartName: "alertmanager"
-    ChartVersion: 0.21.0
+  # alertmanager:
+  #   RepoName: prometheus-community
+  #   RepoURL: 'https://prometheus-community.github.io/helm-charts'
+  #   name: alertmanager
+  #   namespace: urbox-system
+  #   ChartName: "alertmanager"
+  #   ChartVersion: 0.21.0
   
