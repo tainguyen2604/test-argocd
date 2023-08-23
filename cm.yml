@@ -2,6 +2,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: example-secret
+  namespace: argocd
   annotations:
 type: Opaque
 data:
