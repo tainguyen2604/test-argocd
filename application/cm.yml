@@ -1,8 +1,9 @@
-kind: ConfigMap
+kind: Secret
 apiVersion: v1
 metadata:
-  name: dev-loki
+  name: example-secret
   namespace: argocd
+  annotations:
 type: Opaque
 data:
   password: YWJjCg==
