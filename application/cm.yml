@@ -4,6 +4,7 @@ metadata:
   name: example-secret
   namespace: argocd
   annotations:
+    avp.kubernetes.io/path: "k8s"
 type: Opaque
 data:
-  password: YWJjCg==
+  password: <password>
