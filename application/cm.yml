@@ -1,10 +1,9 @@
-kind: Secret
 apiVersion: v1
+kind: Secret
 metadata:
-  name: example-secret
-  namespace: argocd
+  name: mysecret
   annotations:
     avp.kubernetes.io/path: "test/data/k8s"
 type: Opaque
-data:
-  password: <password>
+stringData:
+  TOKEN: <password>
