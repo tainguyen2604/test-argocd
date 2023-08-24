@@ -6,4 +6,16 @@ metadata:
     avp.kubernetes.io/path: "test/data/k8s"
 type: Opaque
 stringData:
-  TOKEN: <password>
+  env: <env>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mycm
+  annotations:
+    avp.kubernetes.io/path: "test/data/k8s"
+data:
+  game.properties: |
+    hello=<a>
+    b=<b>
+    c=<c>
