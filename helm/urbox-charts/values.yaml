@@ -97,5 +97,6 @@ secret:
   fromVault: true
   VaultPath: "test/data/k8s"
   stringData:
-    env: test
-    a: 123
+    env: <a>
+    a: <b>
+    m: <m>
