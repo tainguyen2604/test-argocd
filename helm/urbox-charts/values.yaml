@@ -90,3 +90,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+secret:
+  enable: true
+  fromVault: true
+  VaultPath: "test/data/k8s"
+  stringData:
+    env: test
+    a: 123
