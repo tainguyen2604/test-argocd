@@ -1,0 +1,9 @@
+apiVersion: v2
+name: urbox-chart
+description: Urbox Helm Chart
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+- email: thang.tq@urbox.vn
+  name: thang.tq

@@ -1,0 +1,102 @@
+
+replicaCount: 1
+
+image:
+  repository: tainguyen2604/phim264
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v4"
+podAnnotations: {}
+
+
+healthCheck:
+  enabled: false
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 3
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 5
+containerPorts:
+  - port: 8080
+    name: http
+  - port: 9090
+    name: grpc
+
+env:
+  test: test
+  abc: abc
+envFrom:
+  secretRefNames:
+    - name: test-secret-1
+    - name: test-secret-2
+  configMapRefNames:
+    - name: test-cm-1
+
+secretMount:
+  - name: secret-volume
+    mountPath: /etc/secret-volume
+    subPath: test.yml
+
+
+configmapVolume:
+  - name: cm-volume
+    mountPath: /etc/secret-volume
+    subPath: test.yml
+  - name: cm-volume-new
+    mountPath: /home/db
+    subPath: test-new.yml
+
+service:
+  type: ClusterIP
+
+
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+#         serviceName: test1aaaaa
+          servicePort: 80
+    - host: char1t-example.local
+      paths:
+        - path: /
+          serviceName: ozkahjs1msdhj
+          servicePort: 80
+        - path: /api/a
+          serviceName: test1
+          servicePort: 80
+
+resources: 
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

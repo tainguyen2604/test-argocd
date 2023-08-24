@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "urbox-charts.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+{{- range $portConfig := .Values.containerPorts }}
+    - port: {{ $portConfig.port }}
+      targetPort: {{ $portConfig.port }}
+      protocol: TCP
+      name: {{ $portConfig.name }}
+{{- end }}
+  selector:
+    {{- include "urbox-charts.selectorLabels" . | nindent 4 }}

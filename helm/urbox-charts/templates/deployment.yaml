@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "urbox-charts.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "urbox-charts.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "urbox-charts.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+{{- range $portConfig := .Values.containerPorts }}
+            - name: {{ $portConfig.name }}
+              containerPort: {{ $portConfig.port }}
+              protocol: TCP
+{{- end }}
+{{- if .Values.env }}
+          env:
+{{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ quote $value }}
+{{- end }}
+{{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
+          {{- if .secretRefNames }}
+            {{- range .secretRefNames }}
+            - secretRef:
+                name: {{ .name }}
+            {{- end }}
+          {{- end }}
+          {{- if .configMapRefNames }}
+            {{- range .configMapRefNames }}
+            - configMapRef:
+                name: {{ .name }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+{{- if .Values.healthCheck.enabled }}
+{{- if .Values.healthCheck.livenessProbe }}
+          livenessProbe: 
+{{ toYaml .Values.healthCheck.livenessProbe | indent 12 }}
+{{- end }}
+{{- if .Values.healthCheck.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.healthCheck.readinessProbe | indent 12 }}
+{{- end }}
+{{- end }}
+          {{- if or .Values.secretMount .Values.configmapVolume }}
+          volumeMounts:
+          {{- if .Values.secretMount }}
+          {{- range .Values.secretMount }}
+          - mountPath: {{ .mountPath }}
+            name:  {{ .name }}
+            {{- if .subPath }}
+            subPath: {{ .subPath }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.configmapVolume }}
+          {{- range .Values.configmapVolume }}
+          - mountPath: {{ .mountPath }}
+            name:  {{ .name }}
+            {{- if .subPath }}
+            subPath: {{ .subPath }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - sleep
+                  - '10'
+      {{- if or .Values.secretMount .Values.configmapVolume }}
+      volumes:
+        {{- if .Values.secretMount }}
+        {{- range .Values.secretMount }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .name }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.configmapVolume }}
+        {{- range .Values.configmapVolume }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .name }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
