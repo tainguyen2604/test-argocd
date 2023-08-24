@@ -6,4 +6,4 @@ metadata:
     avp.kubernetes.io/path: "test/data/k8s"
 type: Opaque
 stringData:
-  env: <env>
+  env: <password>
