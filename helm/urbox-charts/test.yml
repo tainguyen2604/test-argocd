@@ -3,11 +3,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: release-name
+  name: abc
   labels:
     helm.sh/chart: urbox-chart-0.1.0
-    app.kubernetes.io/name: release-name
-    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/name: abc
+    app.kubernetes.io/instance: abc
     app.kubernetes.io/component: application
     app.kubernetes.io/part-of: urbox-chart
     app.kubernetes.io/version: "1.0.0"
@@ -15,26 +15,22 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 80
+      targetPort: 80
       protocol: TCP
       name: http
-    - port: 9090
-      targetPort: 9090
-      protocol: TCP
-      name: grpc
   selector:
-    app: release-name
+    app: abc
 ---
 # Source: urbox-chart/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-name
+  name: abc
   labels:
     helm.sh/chart: urbox-chart-0.1.0
-    app.kubernetes.io/name: release-name
-    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/name: abc
+    app.kubernetes.io/instance: abc
     app.kubernetes.io/component: application
     app.kubernetes.io/part-of: urbox-chart
     app.kubernetes.io/version: "1.0.0"
@@ -43,45 +39,25 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: release-name
+      app: abc
   template:
     metadata:
       labels:
-        app: release-name
+        app: abc
     spec:
       containers:
-        - name: release-name
-          image: "tainguyen2604/tool-test:v1"
+        - name: abc
+          image: "nginx:latest"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 8080
-              protocol: TCP
-            - name: grpc
-              containerPort: 9090
+              containerPort: 80
               protocol: TCP
           env:
             - name: abc
-              value: "abc"
+              value: "999"
             - name: test
-              value: "test"
-          envFrom:
-            - secretRef:
-                name: test-secret-1
-            - secretRef:
-                name: test-secret-2
-            - configMapRef:
-                name: test-cm-1
-          volumeMounts:
-          - mountPath: /etc/secret-volume
-            name:  secret-volume
-            subPath: test.yml
-          - mountPath: /etc/secret-volume
-            name:  cm-volume
-            subPath: test.yml
-          - mountPath: /home/db
-            name:  cm-volume-new
-            subPath: test-new.yml
+              value: "123"
           resources:
             limits:
               cpu: 100m
@@ -95,16 +71,6 @@ spec:
                 command:
                   - sleep
                   - '10'
-      volumes:
-        - name: secret-volume
-          secret:
-            secretName: secret-volume
-        - name: cm-volume
-          configMap:
-            name: cm-volume
-        - name: cm-volume-new
-          configMap:
-            name: cm-volume-new
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
 ---
@@ -112,43 +78,26 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: release-name
+  name: abc
   labels:
     helm.sh/chart: urbox-chart-0.1.0
-    app.kubernetes.io/name: release-name
-    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/name: abc
+    app.kubernetes.io/instance: abc
     app.kubernetes.io/component: application
     app.kubernetes.io/part-of: urbox-chart
     app.kubernetes.io/version: "1.0.0"
     app.kubernetes.io/managed-by: Helm
 spec:
-  ingressClassName: nginx
+  ingressClassName: internal-nginx
   rules:
-  - host: chart-example.local
+  - host: test-tools.urbox.services
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: release-name
-            port:
-              number: 80
-  - host: char1t-example.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: ozkahjs1msdhj
-            port:
-              number: 80
-      - path: /api/a
-        pathType: Prefix
-        backend:
-          service:
-            name: test1
+            name: abc
             port:
               number: 80
 ---
@@ -156,11 +105,11 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "release-name-urbox-chart-test-connection"
+  name: "abc-urbox-chart-test-connection"
   labels:
     helm.sh/chart: urbox-chart-0.1.0
-    app.kubernetes.io/name: release-name
-    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/name: abc
+    app.kubernetes.io/instance: abc
     app.kubernetes.io/component: application
     app.kubernetes.io/part-of: urbox-chart
     app.kubernetes.io/version: "1.0.0"
@@ -172,5 +121,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['release-name-urbox-chart:']
+      args: ['abc-urbox-chart:']
   restartPolicy: Never
