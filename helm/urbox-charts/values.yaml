@@ -30,7 +30,7 @@ containerPorts:
 
 env:
   test: 123
-  abc: <a>
+  abc: <path:k8s/data/test#password>
 envFrom:
   secretRefNames:
     # - name: test-secret-1
