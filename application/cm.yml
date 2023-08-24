@@ -4,6 +4,7 @@ metadata:
   name: mysecret
   annotations:
     avp.kubernetes.io/path: "test/data/k8s"
+    namespace: argocd
 type: Opaque
 stringData:
   env: <password>
