@@ -6,13 +6,4 @@ metadata:
     avp.kubernetes.io/path: "test/data/k8s"
 type: Opaque
 stringData:
-  env: <env>
-# ---
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: mycm
-#   annotations:
-#     avp.kubernetes.io/path: "test/data/k8s"
-# data:
-#   hello:<a>
+  env: <password>
