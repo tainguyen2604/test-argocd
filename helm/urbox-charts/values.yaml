@@ -33,8 +33,7 @@ env:
   abc: <path:test/data/k8s#a>
 envFrom:
   secretRefNames:
-    # - name: test-secret-1
-    # - name: test-secret-2
+    - name: test-helm
   configMapRefNames:
     # - name: test-cm-1
 
