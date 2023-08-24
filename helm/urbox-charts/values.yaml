@@ -33,7 +33,7 @@ env:
   abc: <path:test/data/k8s#a>
 envFrom:
   secretRefNames:
-    - name: test-helm
+    - name: urcard-consumer-api
   configMapRefNames:
     # - name: test-cm-1
 
