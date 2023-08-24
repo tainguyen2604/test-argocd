@@ -15,7 +15,4 @@ metadata:
   annotations:
     avp.kubernetes.io/path: "test/data/k8s"
 data:
-  game.properties: |
-    hello=<a>
-    b=<b>
-    c=<c>
+  hello:<a>
